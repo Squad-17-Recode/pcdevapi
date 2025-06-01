@@ -1,12 +1,10 @@
 package com.squad17.pcdevapi.models.empresa;
 
-
 import java.io.File;
 import java.util.UUID;
 
 import com.squad17.pcdevapi.models.endereco.Endereco;
 import com.squad17.pcdevapi.models.enums.RangeFuncionarios;
-
 
 public class Empresa {
     private UUID id; // Identificador único da empresa, gerado automaticamente
@@ -17,7 +15,6 @@ public class Empresa {
     private Endereco endereco; // Endereço da empresa, pode ser null se não houver
     private RangeFuncionarios rangeFuncionarios; // Enum representando a faixa de funcionários da empresa
     private File certificadoCotaPCD; // Arquivo do certificado de cota PCD, pode ser null se não houver
-    private Recrutador[] recrutadores; // Lista de recrutadores associados à empresa (FALTA IMPLEMENTAR A CLASSE RECRUTADOR)
     private Vaga[] vagas; // Lista de vagas de emprego associadas à empresa (FALTA IMPLEMENTAR A CLASSE VAGA)
 
     // Construtor padrão
@@ -31,12 +28,11 @@ public class Empresa {
         this.cnpj = cnpj;
         this.descricao = descricao;
         this.rangeFuncionarios = rangeFuncionarios;
-        this.recrutadores = new Recrutador[0]; // Inicializa array vazio
         this.vagas = new Vaga[0]; // Inicializa array vazio
     }
 
 
-    // Getters e Setters
+    // GETTERS E SETTERS
 
     public UUID getId() {
         return id;
@@ -98,14 +94,6 @@ public class Empresa {
         this.certificadoCotaPCD = certificadoCotaPCD;
     }
 
-    public Recrutador[] getRecrutadores() {
-        return recrutadores;
-    }
-
-    public void setRecrutadores(Recrutador[] recrutadores) {
-        this.recrutadores = recrutadores;
-    }
-
     public Vaga[] getVagas() {
         return vagas;
     }
@@ -115,7 +103,7 @@ public class Empresa {
     }
 
 
-    // Métodos utilitários
+    // MÉTODOS UTILITÁRIOS
 
     // Método toString para debug
     @Override
@@ -124,31 +112,13 @@ public class Empresa {
                 "id=" + id +
                 ", cnpj='" + cnpj + '\'' +
                 ", descricao='" + descricao + '\'' +
+                ", endereco=" + endereco +
                 ", rangeFuncionarios=" + rangeFuncionarios +
-                ", quantidadeRecrutadores=" + (recrutadores != null ? recrutadores.length : 0) +
-                ", quantidadeVagas=" + (vagas != null ? vagas.length : 0) +
                 '}';
     }
 
 
-    // Adicionar um recrutador
-    /**
-     * Cria um novo array com tamanho +1 (para comportar o novo recrutador)
-     * Copia todos os recrutadores existentes para o novo array usando System.arraycopy()
-     * Adiciona o novo recrutador na última posição do novo array
-     * Substitui o array antigo pelo novo array
-     *
-     * @param novoRecrutador
-     */
-    public void adicionarRecrutador(Recrutador novoRecrutador) {
-        Recrutador[] novosRecrutadores = new Recrutador[recrutadores.length + 1];
-        System.arraycopy(recrutadores, 0, novosRecrutadores, 0, recrutadores.length);
-        novosRecrutadores[recrutadores.length] = novoRecrutador;
-        this.recrutadores = novosRecrutadores;
-    }
-
     // Adicionar uma vaga
-
     /**
      * Cria um novo array com tamanho +1 (para comportar a nova vaga)
      * Copia todos os dados existentes para o novo array usando System.arraycopy()
@@ -163,5 +133,22 @@ public class Empresa {
         this.vagas = novasVagas;
     }
 
+    // Remover uma vaga
+    /**
+         * Remove uma vaga do array de vagas da empresa.
+         * Cria um novo array com tamanho -1, copia todas as vagas exceto a vaga a ser removida,
+         * e substitui o array antigo pelo novo.
+         * Se a vaga não for encontrada, o array permanece inalterado.
+         * @param vagaRemover a vaga que deve ser removida
+         */
+    public void removerVaga(Vaga vagaRemover) {
+        Vaga[] novasVagas = new Vaga[vagas.length - 1];
+        int index = 0;
+        for (Vaga vaga : vagas) {
+            if (!vaga.equals(vagaRemover)) {
+                novasVagas[index++] = vaga;
+            }
+        }
+        this.vagas = novasVagas;
+    }
 }
-
