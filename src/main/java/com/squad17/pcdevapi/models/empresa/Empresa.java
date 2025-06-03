@@ -13,7 +13,8 @@ import java.util.UUID;
  * Contém informações básicas da empresa como dados de contato,
  * descrição e foto de perfil.
  *
- * @author Desenvolvedor
+ * @author Lucas Costa
+ * @author squad 17
  * @version 1.0
  * @since 1.0
  */
