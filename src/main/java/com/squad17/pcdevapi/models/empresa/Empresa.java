@@ -7,7 +7,6 @@ import java.util.UUID;
 import com.squad17.pcdevapi.models.endereco.Endereco;
 import com.squad17.pcdevapi.models.enums.RangeFuncionarios;
 
-
 public class Empresa {
     private UUID id; // Identificador único da empresa, gerado automaticamente
     private String cnpj; // CNPJ da empresa, deve ser único
@@ -17,22 +16,14 @@ public class Empresa {
     private Endereco endereco; // Endereço da empresa, pode ser null se não houver
     private RangeFuncionarios rangeFuncionarios; // Enum representando a faixa de funcionários da empresa
     private File certificadoCotaPCD; // Arquivo do certificado de cota PCD, pode ser null se não houver
-    private Recrutador[] recrutadores; // Lista de recrutadores associados à empresa (FALTA IMPLEMENTAR A CLASSE RECRUTADOR)
-    private Vaga[] vagas; // Lista de vagas de emprego associadas à empresa (FALTA IMPLEMENTAR A CLASSE VAGA)
-
-    // Construtor padrão
-    public Empresa() {
-        this.id = UUID.randomUUID(); // Gera automaticamente um UUID único
-    }
+    private List<Vaga> vagas; // Lista de vagas de emprego associadas à empresa (FALTA IMPLEMENTAR A CLASSE VAGA)
 
     // Construtor com parâmetros essenciais
     public Empresa(String cnpj, String descricao, RangeFuncionarios rangeFuncionarios) {
-        this(); // Chama o construtor padrão para gerar o UUID
         this.cnpj = cnpj;
         this.descricao = descricao;
         this.rangeFuncionarios = rangeFuncionarios;
-        this.recrutadores = new Recrutador[0]; // Inicializa array vazio
-        this.vagas = new Vaga[0]; // Inicializa array vazio
+        this.vagas = new List<Vaga>; // Inicializa array vazio
     }
 
 
