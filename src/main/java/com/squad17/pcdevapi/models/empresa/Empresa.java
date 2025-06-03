@@ -1,52 +1,119 @@
 package com.squad17.pcdevapi.models.empresa;
 
 
-import java.io.File;
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.UUID;
 
-import com.squad17.pcdevapi.models.endereco.Endereco;
-import com.squad17.pcdevapi.models.enums.RangeFuncionarios;
-import lombok.Data;
-
-
-@Data // Lombok Data for Getters e Setters
+/**
+ * Entidade que representa uma empresa no sistema.
+ * Contém informações básicas da empresa como dados de contato,
+ * descrição e foto de perfil.
+ *
+ * @author Desenvolvedor
+ * @version 1.0
+ * @since 1.0
+ */
+@Entity
+@Table(name = "empresa")
+@Data
+@NoArgsConstructor
 public class Empresa {
-    private UUID id; // Identificador único da empresa, gerado automaticamente
-    private String cnpj; // CNPJ da empresa, deve ser único
-    private String descricao; // Descrição da empresa
-    private String fotoPerfil; // URL ou caminho da foto de perfil da empresa
 
-    private String bio; // Biografia ou descrição breve da empresa
-    private Endereco endereco; // Endereço da empresa, pode ser null se não houver
-    private RangeFuncionarios rangeFuncionarios; // Enum representando a faixa de funcionários da empresa
-    private File certificadoCotaPCD; // Arquivo do certificado de cota PCD, pode ser null se não houver
-    private List<Vaga> vagas; // Lista de vagas de emprego associadas à empresa (FALTA IMPLEMENTAR A CLASSE VAGA)
+    /**
+     * Identificador único da empresa.
+     * Chave primária gerada automaticamente.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", nullable = false)
+    private UUID id;
 
-    // Construtor com parâmetros essenciais
-    public Empresa(String cnpj, String descricao, RangeFuncionarios rangeFuncionarios) {
+    /**
+     * CNPJ da empresa.
+     * Campo obrigatório com máximo de 250 caracteres.
+     */
+    @Column(name = "cnpj", length = 250, nullable = false)
+    private String cnpj;
+
+    /**
+     * Descrição detalhada da empresa.
+     * Campo opcional com máximo de 250 caracteres.
+     */
+    @Column(name = "descricao", length = 250)
+    private String descricao;
+
+    /**
+     * Senha de acesso da empresa.
+     * Campo obrigatório com máximo de 100 caracteres.
+     */
+    @Column(name = "senha", length = 100, nullable = false)
+    private String senha;
+
+    /**
+     * Email de contato da empresa.
+     * Campo obrigatório com máximo de 100 caracteres.
+     */
+    @Column(name = "email", length = 100, nullable = false)
+    private String email;
+
+    /**
+     * Foto de perfil da empresa.
+     * Campo opcional armazenado como TEXT.
+     */
+    @Column(name = "foto_perfil", columnDefinition = "TEXT")
+    private String fotoPerfil;
+
+    /**
+     * Biografia ou informações adicionais da empresa.
+     * Campo opcional com máximo de 500 caracteres.
+     */
+    @Column(name = "bio", length = 500)
+    private String bio;
+
+    /**
+     * ID do endereço associado à empresa.
+     * Campo obrigatório com máximo de 500 caracteres.
+     */
+    @Column(name = "endereco_id", length = 500, nullable = false)
+    private String enderecoId;
+
+    /**
+     * Construtor completo para criação de uma nova empresa.
+     *
+     * @param cnpj CNPJ da empresa
+     * @param descricao Descrição da empresa
+     * @param senha Senha de acesso
+     * @param email Email de contato
+     * @param fotoPerfil Foto de perfil
+     * @param bio Biografia da empresa
+     * @param enderecoId ID do endereço
+     */
+    public Empresa(String cnpj, String descricao, String senha, String email,
+                   String fotoPerfil, String bio, String enderecoId) {
         this.cnpj = cnpj;
         this.descricao = descricao;
-        this.rangeFuncionarios = rangeFuncionarios;
-        this.vagas = new List<Vaga>(); // Inicializa array vazio
+        this.senha = senha;
+        this.email = email;
+        this.fotoPerfil = fotoPerfil;
+        this.bio = bio;
+        this.enderecoId = enderecoId;
     }
 
-
-    // MÉTODOS UTILITÁRIOS
-    
-    // Adicionar uma vaga
     /**
-     * Cria um novo array com tamanho +1 (para comportar a nova vaga)
-     * Copia todos os dados existentes para o novo array usando System.arraycopy()
-     * Adiciona a nova vaga na última posição do novo array
-     * Substitui o array antigo pelo novo array
-     * @param novaVaga
+     * Construtor para criação de empresa com campos obrigatórios.
+     *
+     * @param cnpj CNPJ da empresa
+     * @param senha Senha de acesso
+     * @param email Email de contato
+     * @param enderecoId ID do endereço
      */
-    public void adicionarVaga(Vaga novaVaga) {
-        List<Vaga> novasVagas = new Vaga[vagas.length + 1];
-        System.arraycopy(vagas, 0, novasVagas, 0, vagas.length);
-        novasVagas[vagas.length] = novaVaga;
-        this.vagas = novasVagas;
+    public Empresa(String cnpj, String senha, String email, String enderecoId) {
+        this.cnpj = cnpj;
+        this.senha = senha;
+        this.email = email;
+        this.enderecoId = enderecoId;
     }
-
 }
-
