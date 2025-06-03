@@ -2,6 +2,7 @@ package com.squad17.pcdevapi.models.empresa;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -35,6 +36,7 @@ public class Empresa {
      * CNPJ da empresa.
      * Campo obrigatório com máximo de 250 caracteres.
      */
+    @NotNull(message = "CNPJ da empresa é obrigatório")
     @Column(name = "cnpj", length = 250, nullable = false)
     private String cnpj;
 
@@ -49,6 +51,7 @@ public class Empresa {
      * Senha de acesso da empresa.
      * Campo obrigatório com máximo de 100 caracteres.
      */
+    @NotNull(message = "Senha não pode ser nula")
     @Column(name = "senha", length = 100, nullable = false)
     private String senha;
 
@@ -56,6 +59,7 @@ public class Empresa {
      * Email de contato da empresa.
      * Campo obrigatório com máximo de 100 caracteres.
      */
+    @NotNull(message = "E-mail da empresa é obrigatório")
     @Column(name = "email", length = 100, nullable = false)
     private String email;
 
@@ -77,6 +81,7 @@ public class Empresa {
      * ID do endereço associado à empresa.
      * Campo obrigatório com máximo de 500 caracteres.
      */
+    @NotNull(message = "ID do endereço é obrigatório")
     @Column(name = "endereco_id", length = 500, nullable = false)
     private String enderecoId;
 
