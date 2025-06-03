@@ -17,9 +17,10 @@ import java.util.UUID;
  * incluindo dados como nome do cargo, descrição, período de candidatura
  * e status de disponibilidade.
  *
- * @author Sistema de Vagas
+ * @author Lucas Costa
+ * @author Squad 17
  * @version 1.0
- * @since 2024
+ * @since 1.0
  */
 @Entity
 @Table(name = "vaga")
