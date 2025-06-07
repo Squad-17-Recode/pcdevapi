@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -102,6 +103,10 @@ public class Vaga {
     @Column(name = "data_fim_ultima_etapa", nullable = false)
     private LocalDate dataFimUltimaEtapa;
 
+    @ElementCollection
+    @CollectionTable(name = "vaga_tags", joinColumns = @JoinColumn(name = "vaga_id"))
+    @Column(name = "tag")
+    private ArrayList<String> tags;
     /**
      * Construtor completo para criação de uma nova vaga.
      *
@@ -150,6 +155,7 @@ public class Vaga {
         this.statusVaga = statusVaga != null ? statusVaga : true;
         this.dataFimCandidatura = dataFimCandidatura;
         this.dataFimUltimaEtapa = dataFimUltimaEtapa;
+        this.tags = new ArrayList<String>();
     }
 
     /**
