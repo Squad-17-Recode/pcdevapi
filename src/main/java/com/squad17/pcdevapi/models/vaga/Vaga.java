@@ -59,7 +59,7 @@ public class Vaga {
     @Column(name = "tag")
     private ArrayList<String> tags;
 
-    public Vaga(UUID empresaId,
+    public Vaga(Empresa empresa,
                 String nomeCargo,
                 String descricao,
                 String logoEmpresa,
@@ -67,9 +67,6 @@ public class Vaga {
                 LocalDate dataFimCandidatura,
                 LocalDate dataFimUltimaEtapa) {
 
-        if (empresaId == null) {
-            throw new IllegalArgumentException("ID da empresa não pode ser nulo");
-        }
         if (nomeCargo == null || nomeCargo.trim().isEmpty()) {
             throw new IllegalArgumentException("Nome do cargo não pode ser nulo ou vazio");
         }
@@ -84,7 +81,7 @@ public class Vaga {
             throw new IllegalArgumentException("Data fim da candidatura não pode ser posterior à data fim da última etapa");
         }
 
-        this.empresaId = empresaId;
+        this.empresa = empresa;
         this.nomeCargo = nomeCargo;
         this.descricao = descricao != null ? descricao : "";
         this.logoEmpresa = logoEmpresa != null ? logoEmpresa : "";
@@ -94,11 +91,11 @@ public class Vaga {
         this.tags = new ArrayList<String>();
     }
 
-    public Vaga(UUID empresaId,
+    public Vaga(Empresa empresa,
                 String nomeCargo,
                 LocalDate dataFimCandidatura,
                 LocalDate dataFimUltimaEtapa) {
-        this(empresaId, nomeCargo, null, null, true, dataFimCandidatura, dataFimUltimaEtapa);
+        this(empresa, nomeCargo, null, null, true, dataFimCandidatura, dataFimUltimaEtapa);
     }
 
     public boolean isDisponivelParaCandidatura() {
@@ -125,7 +122,7 @@ public class Vaga {
 
     @Override
     public String toString() {
-        return String.format("Vaga{id=%s, nomeCargo='%s', empresaId=%s, statusVaga=%s, dataFimCandidatura=%s}",
-                id, nomeCargo, empresaId, statusVaga, dataFimCandidatura);
+        return String.format("Vaga{id=%s, nomeCargo='%s', empresa=%s, statusVaga=%s, dataFimCandidatura=%s}",
+                id, nomeCargo, empresa, statusVaga, dataFimCandidatura);
     }
 }
