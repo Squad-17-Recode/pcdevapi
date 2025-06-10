@@ -45,7 +45,6 @@ public class Vaga {
     @Column(name = "status_vaga", nullable = false)
     private Boolean statusVaga = true;
 
-
     @NotNull(message = "Data de fim da candidatura é obrigatória")
     @Column(name = "data_fim_candidatura", nullable = false)
     private LocalDate dataFimCandidatura;
