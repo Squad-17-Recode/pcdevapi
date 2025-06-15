@@ -8,7 +8,7 @@ import com.squad17.pcdevapi.models.conta.Conta;
 import com.squad17.pcdevapi.models.contato.Contato;
 import com.squad17.pcdevapi.models.endereco.Endereco;
 import com.squad17.pcdevapi.models.enums.TipoDeficiencia;
-import com.squad17.pcdevapi.models.experiencia.Experiencia;
+import com.squad17.pcdevapi.models.habilidade.Experiencia;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
