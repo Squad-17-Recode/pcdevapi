@@ -37,7 +37,8 @@ public abstract class Conta {
     @Column(name = "nome", length = 250, nullable = false)
     private String nome;
 
-    public Conta(String username, String email, String senha, String nome) {
+    public Conta(UUID id, String username, String email, String senha, String nome) {
+        this.id = id;
         this.username = username;
         this.email = email;
         this.senha = senha;

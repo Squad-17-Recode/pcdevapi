@@ -1,6 +1,7 @@
 package com.squad17.pcdevapi.models.candidato;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import com.squad17.pcdevapi.models.candidatura.Candidatura;
 import com.squad17.pcdevapi.models.conta.Conta;
@@ -64,7 +65,7 @@ public class Candidato extends Conta {
     private ArrayList<Contato> contatos;
 
     public Candidato(String username, String email, String senha, String nome, String cpf, Endereco endereco, TipoDeficiencia tipoDeficiencia, ArrayList<Candidatura> candidaturas, ArrayList<Experiencia> experiencias, ArrayList<Contato> contatos) {
-        super(username, email, senha, nome);
+        super(UUID.randomUUID(), username, email, senha, nome);
         this.cpf = cpf;
         this.endereco = endereco;
         this.tipoDeficiencia = tipoDeficiencia;

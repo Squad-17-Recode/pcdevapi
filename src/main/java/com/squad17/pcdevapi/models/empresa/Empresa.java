@@ -12,16 +12,6 @@ import java.util.UUID;
 import com.squad17.pcdevapi.models.conta.Conta;
 import com.squad17.pcdevapi.models.endereco.Endereco;
 
-/**
- * Entidade que representa uma empresa no sistema.
- * Contém informações básicas da empresa como dados de contato,
- * descrição e foto de perfil.
- *
- * @author Lucas Costa
- * @author squad 17
- * @version 1.0
- * @since 1.0
- */
 @Entity
 @Table(name = "empresa")
 @Data
@@ -51,35 +41,16 @@ public class Empresa extends Conta {
     @JoinColumn(name = "endereco_id", referencedColumnName = "id", insertable = false, updatable = true, nullable = false)
     private Endereco endereco;
 
-    /**
-     * Construtor completo para criação de uma nova empresa.
-     *
-     * @param cnpj CNPJ da empresa
-     * @param descricao Descrição da empresa
-     * @param senha Senha de acesso
-     * @param email Email de contato
-     * @param fotoPerfil Foto de perfil
-     * @param endereco Endereço da empresa
-     */
-    public Empresa(String cnpj, String username, String nome, String descricao, String senha, String email,
-                   String fotoPerfil, String bio, Endereco endereco) {
-        super(username, email, senha, nome);
+    public Empresa(String cnpj, String username, String nome, String descricao, String senha, String email, String fotoPerfil, String bio, Endereco endereco) {
+        super(UUID.randomUUID(), username, email, senha, nome);
         this.cnpj = cnpj;
         this.descricao = descricao;
         this.fotoPerfil = fotoPerfil;
         this.endereco = endereco;
     }
 
-    /**
-     * Construtor para criação de empresa com campos obrigatórios.
-     *
-     * @param cnpj CNPJ da empresa
-     * @param senha Senha de acesso
-     * @param email Email de contato
-     * @param endereco Endereço da empresa
-     */
     public Empresa(String cnpj, String username, String email, String senha, String nome, Endereco endereco) {
-        super(username, email, senha, nome);
+        super(UUID.randomUUID(), username, email, senha, nome);
         this.cnpj = cnpj;
         this.endereco = endereco;
     }
