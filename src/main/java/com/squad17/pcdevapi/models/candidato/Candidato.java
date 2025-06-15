@@ -46,7 +46,6 @@ public class Candidato extends Conta {
     @NotNull(message = "Tipo de deficiência não pode ser nulo")
     @Column(name = "tipo_deficiencia", nullable = false)
     @Enumerated(EnumType.STRING)
-    @Size(max = 50, message = "Tipo de deficiência deve ter no máximo 50 caracteres")
     private TipoDeficiencia tipoDeficiencia;
 
     @ElementCollection
