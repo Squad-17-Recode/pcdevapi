@@ -8,7 +8,7 @@ import com.squad17.pcdevapi.models.conta.Conta;
 import com.squad17.pcdevapi.models.contato.Contato;
 import com.squad17.pcdevapi.models.endereco.Endereco;
 import com.squad17.pcdevapi.models.enums.TipoDeficiencia;
-import com.squad17.pcdevapi.models.habilidade.Experiencia;
+import com.squad17.pcdevapi.models.habilidade.Habilidade;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -54,22 +54,22 @@ public class Candidato extends Conta {
     private ArrayList<Candidatura> candidaturas;
 
     @ElementCollection
-    @CollectionTable(name = "candidato_experiencias", joinColumns = @JoinColumn(name = "candidato_id"))
-    @Column(name = "experiencia")
-    private ArrayList<Experiencia> experiencias;
+    @CollectionTable(name = "candidato_habilidades", joinColumns = @JoinColumn(name = "candidato_id"))
+    @Column(name = "habilidade")
+    private ArrayList<Habilidade> habilidades;
 
     @ElementCollection
     @CollectionTable(name = "candidato_contatos", joinColumns = @JoinColumn(name = "candidato_id"))
     @Column(name = "contato")
     private ArrayList<Contato> contatos;
 
-    public Candidato(String username, String email, String senha, String nome, String cpf, Endereco endereco, TipoDeficiencia tipoDeficiencia, ArrayList<Candidatura> candidaturas, ArrayList<Experiencia> experiencias, ArrayList<Contato> contatos) {
+    public Candidato(String username, String email, String senha, String nome, String cpf, Endereco endereco, TipoDeficiencia tipoDeficiencia, ArrayList<Candidatura> candidaturas, ArrayList<Habilidade> habilidades, ArrayList<Contato> contatos) {
         super(UUID.randomUUID(), username, email, senha, nome);
         this.cpf = cpf;
         this.endereco = endereco;
         this.tipoDeficiencia = tipoDeficiencia;
         this.candidaturas = candidaturas;
-        this.experiencias = experiencias;
+        this.habilidades = habilidades;
         this.contatos = contatos;
     }
 }
