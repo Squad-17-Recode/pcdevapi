@@ -5,7 +5,7 @@ public enum StatusCandidatura {
     ACEITA("Aceita"),
     RECUSADA("Recusada");
 
-    private String descricao;
+    private final String descricao;
 
     StatusCandidatura(String descricao) {
         this.descricao = descricao;
