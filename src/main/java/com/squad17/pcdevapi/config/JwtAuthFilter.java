@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.squad17.pcdevapi.service.UserDetailsServiceImpl;
+import com.squad17.pcdevapi.service.conta.ContaDetailsServiceImpl;
 
 import java.io.IOException;
 
@@ -23,10 +23,10 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
-    private final UserDetailsServiceImpl candidatoDetailsService;
-    private final UserDetailsServiceImpl empresaDetailsService;
+    private final ContaDetailsServiceImpl candidatoDetailsService;
+    private final ContaDetailsServiceImpl empresaDetailsService;
 
-    public JwtAuthFilter(JwtUtils jwtUtils, @Qualifier("candidatoDetailsService") UserDetailsServiceImpl candidatoDetailsService, @Qualifier("empresaDetailsService") UserDetailsServiceImpl empresaDetailsService ) {
+    public JwtAuthFilter(JwtUtils jwtUtils, @Qualifier("candidatoDetailsService") ContaDetailsServiceImpl candidatoDetailsService, @Qualifier("empresaDetailsService") ContaDetailsServiceImpl empresaDetailsService ) {
         this.jwtUtils = jwtUtils;
         this.candidatoDetailsService = candidatoDetailsService;
         this.empresaDetailsService = empresaDetailsService;
