@@ -1,23 +1,20 @@
 package com.squad17.pcdevapi.service;
 
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.squad17.pcdevapi.models.conta.Conta;
+import com.squad17.pcdevapi.repository.CandidatoRepository;
 import com.squad17.pcdevapi.repository.EmpresaRepository;
 
-@Service
-public class EmpresaDetailsServiceImpl implements UserDetailsService {
-    public final EmpresaRepository empresaRepository;
+@Service("empresaDetailsService")
+public class EmpresaDetailsServiceImpl extends UserDetailsServiceImpl {
 
-    public EmpresaDetailsServiceImpl(EmpresaRepository empresaRepository) {
-        this.empresaRepository = empresaRepository;
+    public EmpresaDetailsServiceImpl(CandidatoRepository candidatoRepository, EmpresaRepository empresaRepository) {
+        super(candidatoRepository, empresaRepository);
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) {
-        return (UserDetails) empresaRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Empresa não encontrada com username: " + username));
+    protected Conta findByUsername(String username) {
+        return empresaRepository.findByUsername(username).orElse(null);
     }
 }

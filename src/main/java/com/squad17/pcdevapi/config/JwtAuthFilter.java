@@ -5,15 +5,17 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.squad17.pcdevapi.service.CandidatoDetailsServiceImpl;
+import com.squad17.pcdevapi.service.UserDetailsServiceImpl;
 
 import java.io.IOException;
 
@@ -21,11 +23,13 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
-    private final CandidatoDetailsServiceImpl candidatoDetailsServiceImpl;
+    private final UserDetailsServiceImpl candidatoDetailsService;
+    private final UserDetailsServiceImpl empresaDetailsService;
 
-    public JwtAuthFilter(JwtUtils jwtUtils, CandidatoDetailsServiceImpl candidatoDetailsServiceImpl) {
+    public JwtAuthFilter(JwtUtils jwtUtils, @Qualifier("candidatoDetailsService") UserDetailsServiceImpl candidatoDetailsService, @Qualifier("empresaDetailsService") UserDetailsServiceImpl empresaDetailsService ) {
         this.jwtUtils = jwtUtils;
-        this.candidatoDetailsServiceImpl = candidatoDetailsServiceImpl;
+        this.candidatoDetailsService = candidatoDetailsService;
+        this.empresaDetailsService = empresaDetailsService;
     }
 
     @Override
@@ -45,8 +49,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         username = jwtUtils.extractUsername(jwt);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.candidatoDetailsServiceImpl.loadUserByUsername(username);
-            if (jwtUtils.validateToken(jwt, userDetails)) {
+            UserDetails userDetails = null;
+            try {
+                userDetails = candidatoDetailsService.loadUserByUsername(username);
+            } catch (UsernameNotFoundException e) {
+                try {
+                    userDetails = empresaDetailsService.loadUserByUsername(username);
+                } catch (UsernameNotFoundException ignored) {
+
+                }
+            }
+
+            if (userDetails != null && jwtUtils.validateToken(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
