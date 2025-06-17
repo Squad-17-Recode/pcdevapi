@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import com.squad17.pcdevapi.models.conta.Conta;
 import com.squad17.pcdevapi.models.endereco.Endereco;
 
@@ -41,16 +43,16 @@ public class Empresa extends Conta {
     @JoinColumn(name = "endereco_id", referencedColumnName = "id", insertable = false, updatable = true, nullable = false)
     private Endereco endereco;
 
-    public Empresa(String cnpj, String username, String nome, String descricao, String senha, String email, String fotoPerfil, String bio, Endereco endereco) {
-        super(UUID.randomUUID(), username, email, senha, nome);
+    public Empresa(String cnpj, String username, String nome, String descricao, String senha, String email, String fotoPerfil, String bio, Endereco endereco, PasswordEncoder passwordEncoder) {
+        super(UUID.randomUUID(), username, email, senha, nome, passwordEncoder);
         this.cnpj = cnpj;
         this.descricao = descricao;
         this.fotoPerfil = fotoPerfil;
         this.endereco = endereco;
     }
 
-    public Empresa(String cnpj, String username, String email, String senha, String nome, Endereco endereco) {
-        super(UUID.randomUUID(), username, email, senha, nome);
+    public Empresa(String cnpj, String username, String email, String senha, String nome, Endereco endereco, PasswordEncoder passwordEncoder) {
+        super(UUID.randomUUID(), username, email, senha, nome, passwordEncoder);
         this.cnpj = cnpj;
         this.endereco = endereco;
     }

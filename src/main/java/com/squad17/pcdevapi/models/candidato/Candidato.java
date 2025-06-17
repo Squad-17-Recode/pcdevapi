@@ -3,6 +3,8 @@ package com.squad17.pcdevapi.models.candidato;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import com.squad17.pcdevapi.models.candidatura.Candidatura;
 import com.squad17.pcdevapi.models.conta.Conta;
 import com.squad17.pcdevapi.models.contato.Contato;
@@ -63,8 +65,8 @@ public class Candidato extends Conta {
     @Column(name = "contato")
     private ArrayList<Contato> contatos;
 
-    public Candidato(String username, String email, String senha, String nome, String cpf, Endereco endereco, TipoDeficiencia tipoDeficiencia, ArrayList<Candidatura> candidaturas, ArrayList<Habilidade> habilidades, ArrayList<Contato> contatos) {
-        super(UUID.randomUUID(), username, email, senha, nome);
+    public Candidato(String username, String email, String senha, String nome, String cpf, Endereco endereco, TipoDeficiencia tipoDeficiencia, ArrayList<Candidatura> candidaturas, ArrayList<Habilidade> habilidades, ArrayList<Contato> contatos, PasswordEncoder passwordEncoder) {
+        super(UUID.randomUUID(), username, email, senha, nome, passwordEncoder);
         this.cpf = cpf;
         this.endereco = endereco;
         this.tipoDeficiencia = tipoDeficiencia;

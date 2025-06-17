@@ -2,6 +2,8 @@ package com.squad17.pcdevapi.models.conta;
 
 import java.util.UUID;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -16,7 +18,6 @@ public abstract class Conta {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.AUTO)
     private UUID id;
-
 
     @NotNull(message = "Username é obrigatório")
     @Size(max = 100, message = "Username deve ter no máximo 100 caracteres")
@@ -38,11 +39,19 @@ public abstract class Conta {
     @Column(name = "nome", length = 250, nullable = false)
     private String nome;
 
-    public Conta(UUID id, String username, String email, String senha, String nome) {
+    public void setSenha(String senha, PasswordEncoder passwordEncoder) {
+        this.senha = passwordEncoder.encode(senha);
+    }
+
+    public boolean verificarSenha(String senhaPlana, PasswordEncoder passwordEncoder) {
+        return passwordEncoder.matches(senhaPlana, this.senha);
+    }
+
+    public Conta(UUID id, String username, String email, String senha, String nome, PasswordEncoder passwordEncoder) {
         this.id = id;
         this.username = username;
         this.email = email;
-        this.senha = senha;
+        this.setSenha(senha, passwordEncoder);
         this.nome = nome;
     }
 }
