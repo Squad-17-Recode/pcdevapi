@@ -13,6 +13,6 @@ public interface EmpresaRepository extends JpaRepository<Empresa, UUID> {
 
     boolean existsByUsername(String username);
 
-    boolean existsByCnpj(String cnpj);
+    boolean existsByEmail(String email);
 
 }
