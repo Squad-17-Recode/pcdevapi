@@ -1,4 +1,4 @@
-package com.squad17.pcdevapi.service;
+package com.squad17.pcdevapi.service.conta;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -8,12 +8,12 @@ import com.squad17.pcdevapi.models.conta.Conta;
 import com.squad17.pcdevapi.repository.CandidatoRepository;
 import com.squad17.pcdevapi.repository.EmpresaRepository;
 
-public abstract class UserDetailsServiceImpl implements UserDetailsService {
+public abstract class ContaDetailsServiceImpl implements UserDetailsService {
 
     protected final CandidatoRepository candidatoRepository;
     protected final EmpresaRepository empresaRepository;
 
-    public UserDetailsServiceImpl(CandidatoRepository candidatoRepository, EmpresaRepository empresaRepository) {
+    public ContaDetailsServiceImpl(CandidatoRepository candidatoRepository, EmpresaRepository empresaRepository) {
         this.candidatoRepository = candidatoRepository;
         this.empresaRepository = empresaRepository;
     }

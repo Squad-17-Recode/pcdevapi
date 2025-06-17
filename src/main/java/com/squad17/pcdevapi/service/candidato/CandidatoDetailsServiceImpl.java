@@ -1,13 +1,14 @@
-package com.squad17.pcdevapi.service;
+package com.squad17.pcdevapi.service.candidato;
 
 import org.springframework.stereotype.Service;
 
 import com.squad17.pcdevapi.models.conta.Conta;
 import com.squad17.pcdevapi.repository.CandidatoRepository;
 import com.squad17.pcdevapi.repository.EmpresaRepository;
+import com.squad17.pcdevapi.service.conta.ContaDetailsServiceImpl;
 
 @Service("candidatoDetailsService")
-public class CandidatoDetailsServiceImpl extends UserDetailsServiceImpl {
+public class CandidatoDetailsServiceImpl extends ContaDetailsServiceImpl {
 
     public CandidatoDetailsServiceImpl(CandidatoRepository candidatoRepository, EmpresaRepository empresaRepository) {
         super(candidatoRepository, empresaRepository);
