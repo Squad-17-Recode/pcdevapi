@@ -1,4 +1,4 @@
-package com.squad17.pcdevapi.repository;
+package com.squad17.pcdevapi.repository.candidato;
 
 import java.util.Optional;
 import java.util.UUID;

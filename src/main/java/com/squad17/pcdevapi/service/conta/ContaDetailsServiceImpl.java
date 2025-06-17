@@ -5,8 +5,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.squad17.pcdevapi.models.conta.Conta;
-import com.squad17.pcdevapi.repository.CandidatoRepository;
-import com.squad17.pcdevapi.repository.EmpresaRepository;
+import com.squad17.pcdevapi.repository.candidato.CandidatoRepository;
+import com.squad17.pcdevapi.repository.empresa.EmpresaRepository;
 
 public abstract class ContaDetailsServiceImpl implements UserDetailsService {
 
