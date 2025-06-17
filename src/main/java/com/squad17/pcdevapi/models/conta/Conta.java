@@ -17,14 +17,15 @@ public abstract class Conta {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.AUTO)
     private UUID id;
 
+
     @NotNull(message = "Username é obrigatório")
     @Size(max = 100, message = "Username deve ter no máximo 100 caracteres")
-    @Column(name = "username", length = 100, nullable = false)
+    @Column(name = "username", length = 100, nullable = false, unique = true)
     private String username;
 
     @NotNull(message = "Email é obrigatório")
     @Size(max = 250, message = "Email deve ter no máximo 250 caracteres")
-    @Column(name = "email", length = 250, nullable = false)
+    @Column(name = "email", length = 250, nullable = false, unique = true)
     private String email;
 
     @NotNull(message = "Senha é obrigatória")
