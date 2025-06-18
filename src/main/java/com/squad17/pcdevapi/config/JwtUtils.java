@@ -8,6 +8,9 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
+import com.squad17.pcdevapi.models.conta.Conta;
+
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -49,9 +52,9 @@ public class JwtUtils {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(Conta conta) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+        return createToken(claims, conta.getUsername());
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
