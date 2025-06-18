@@ -18,7 +18,9 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -42,7 +44,8 @@ public class Candidato extends Conta {
     private String bio;
 
     @NotNull(message = "Endereço não pode ser nulo")
-    @Column(name = "endereco", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "endereco", nullable = false)
     private Endereco endereco;
 
     @NotNull(message = "Tipo de deficiência não pode ser nulo")

@@ -11,9 +11,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.persistence.MappedSuperclass;
 
 @Data
 @NoArgsConstructor
+@MappedSuperclass
 public abstract class Conta {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.AUTO)
