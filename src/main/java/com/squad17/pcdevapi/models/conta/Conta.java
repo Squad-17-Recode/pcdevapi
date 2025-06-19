@@ -49,8 +49,7 @@ public abstract class Conta {
         return passwordEncoder.matches(senhaPlana, this.senha);
     }
 
-    public Conta(UUID id, String username, String email, String senha, String nome, PasswordEncoder passwordEncoder) {
-        this.id = id;
+    public Conta(String username, String email, String senha, String nome, PasswordEncoder passwordEncoder) {
         this.username = username;
         this.email = email;
         this.setSenha(senha, passwordEncoder);

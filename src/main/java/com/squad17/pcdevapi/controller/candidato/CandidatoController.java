@@ -70,7 +70,6 @@ public class CandidatoController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CandidatoResponseDTO> updateCandidato(@PathVariable UUID id, @Valid @RequestBody CandidatoDTO candidatoDTO) {
         if (!candidatoRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
@@ -87,7 +86,6 @@ public class CandidatoController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> deleteCandidato(@PathVariable UUID id) {
         if (!candidatoRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
@@ -101,6 +99,12 @@ public class CandidatoController {
         return ResponseEntity.ok().build();
     }
 
+    @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleAll(Exception ex) {
+        ex.printStackTrace();
+        return ResponseEntity.status(500).body(ex.getClass().getName() + ": " + ex.getMessage());
+    }
+
     private Candidato convertToEntity(CandidatoDTO dto) {
         ArrayList<Contato> contatos = new ArrayList<>();
         if (dto.getContatos() != null) {
@@ -109,8 +113,9 @@ public class CandidatoController {
 
         ArrayList<Habilidade> habilidades = new ArrayList<>();
         if (dto.getHabilidades() != null) {
-            dto.getHabilidades().forEach(habilidade -> habilidades.add(new Habilidade(habilidade, 0)));
+            dto.getHabilidades().forEach(habilidadeNome -> habilidades.add(new Habilidade(habilidadeNome, 0, null)));
         }
+
 
         return new Candidato(
             dto.getUsername(),

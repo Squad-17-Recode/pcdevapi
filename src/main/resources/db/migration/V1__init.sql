@@ -19,8 +19,8 @@ CREATE TABLE candidato (
     nome VARCHAR(250) NOT NULL,
     cpf VARCHAR(11) NOT NULL,
     bio VARCHAR(250),
-    endereco UUID NOT NULL,
-    tipo_deficiencia VARCHAR(50) NOT NULL,
+    endereco UUID,
+    tipo_deficiencia VARCHAR(50),
     CONSTRAINT fk_candidato_endereco FOREIGN KEY (endereco) REFERENCES endereco(id)
 );
 
@@ -33,19 +33,23 @@ CREATE TABLE empresa (
     cnpj VARCHAR(250) NOT NULL,
     descricao VARCHAR(250),
     foto_perfil TEXT,
-    endereco_id UUID NOT NULL,
+    endereco_id UUID,
     CONSTRAINT fk_empresa_endereco FOREIGN KEY (endereco_id) REFERENCES endereco(id)
 );
 
 CREATE TABLE habilidade (
     id UUID PRIMARY KEY,
     nome VARCHAR(250) NOT NULL,
-    anos_experiencia INTEGER NOT NULL
+    anos_experiencia INTEGER NOT NULL,
+    candidato_id UUID,
+    CONSTRAINT fk_habilidade_candidato FOREIGN KEY (candidato_id) REFERENCES candidato(id) ON DELETE CASCADE
 );
 
 CREATE TABLE contato (
     id UUID PRIMARY KEY,
-    numero_telefone VARCHAR(20) NOT NULL
+    numero_telefone VARCHAR(20) NOT NULL,
+    candidato_id UUID,
+    CONSTRAINT fk_contato_candidato FOREIGN KEY (candidato_id) REFERENCES candidato(id) ON DELETE CASCADE
 );
 
 CREATE TABLE vaga (
@@ -64,18 +68,6 @@ CREATE TABLE vaga_tags (
     vaga_id UUID NOT NULL,
     tag VARCHAR(255),
     CONSTRAINT fk_vaga_tags_vaga FOREIGN KEY (vaga_id) REFERENCES vaga(id)
-);
-
-CREATE TABLE candidato_habilidades (
-    candidato_id UUID NOT NULL,
-    habilidade VARCHAR(255),
-    CONSTRAINT fk_candidato_habilidades_candidato FOREIGN KEY (candidato_id) REFERENCES candidato(id)
-);
-
-CREATE TABLE candidato_contatos (
-    candidato_id UUID NOT NULL,
-    contato VARCHAR(255),
-    CONSTRAINT fk_candidato_contatos_candidato FOREIGN KEY (candidato_id) REFERENCES candidato(id)
 );
 
 CREATE TABLE candidatura (

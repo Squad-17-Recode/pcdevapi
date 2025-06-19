@@ -2,11 +2,15 @@ package com.squad17.pcdevapi.models.habilidade;
 
 import java.util.UUID;
 
+import com.squad17.pcdevapi.models.candidato.Candidato;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -33,7 +37,11 @@ public class Habilidade {
     @Column(name = "anos_experiencia", nullable = false)
     private Integer anosExperiencia;
 
-    public Habilidade(String nome, Integer anosExperiencia) {
+    @ManyToOne
+    @JoinColumn(name = "candidato_id")
+    private Candidato candidato;
+
+    public Habilidade(String nome, Integer anosExperiencia, Candidato candidato) {
         this.nome = nome;
         this.anosExperiencia = anosExperiencia;
     }

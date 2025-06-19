@@ -1,6 +1,7 @@
 package com.squad17.pcdevapi.models.candidato;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,6 +13,7 @@ import com.squad17.pcdevapi.models.endereco.Endereco;
 import com.squad17.pcdevapi.models.enums.TipoDeficiencia;
 import com.squad17.pcdevapi.models.habilidade.Habilidade;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -21,6 +23,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -43,33 +46,25 @@ public class Candidato extends Conta {
     @Column(name = "bio", length = 250)
     private String bio;
 
-    @NotNull(message = "Endereço não pode ser nulo")
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "endereco", nullable = false)
+    @JoinColumn(name = "endereco")
     private Endereco endereco;
 
-    @NotNull(message = "Tipo de deficiência não pode ser nulo")
-    @Column(name = "tipo_deficiencia", nullable = false)
+    @Column(name = "tipo_deficiencia")
     @Enumerated(EnumType.STRING)
     private TipoDeficiencia tipoDeficiencia;
 
-    @ElementCollection
-    @CollectionTable(name = "candidato_candidaturas", joinColumns = @JoinColumn(name = "candidato_id"))
-    @Column(name = "candidatura")
-    private ArrayList<Candidatura> candidaturas;
+    @OneToMany(mappedBy = "candidato", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Candidatura> candidaturas = new ArrayList<>();
 
-    @ElementCollection
-    @CollectionTable(name = "candidato_habilidades", joinColumns = @JoinColumn(name = "candidato_id"))
-    @Column(name = "habilidade")
-    private ArrayList<Habilidade> habilidades;
+    @OneToMany(mappedBy = "candidato", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Habilidade> habilidades = new ArrayList<>();
 
-    @ElementCollection
-    @CollectionTable(name = "candidato_contatos", joinColumns = @JoinColumn(name = "candidato_id"))
-    @Column(name = "contato")
-    private ArrayList<Contato> contatos;
+    @OneToMany(mappedBy = "candidato", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Contato> contatos = new ArrayList<>();
 
     public Candidato(String username, String email, String senha, String nome, String cpf, Endereco endereco, TipoDeficiencia tipoDeficiencia, ArrayList<Candidatura> candidaturas, ArrayList<Habilidade> habilidades, ArrayList<Contato> contatos, PasswordEncoder passwordEncoder) {
-        super(UUID.randomUUID(), username, email, senha, nome, passwordEncoder);
+        super(username, email, senha, nome, passwordEncoder);
         this.cpf = cpf;
         this.endereco = endereco;
         this.tipoDeficiencia = tipoDeficiencia;

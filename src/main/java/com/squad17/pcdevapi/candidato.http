@@ -1,0 +1,14 @@
+### Create Candidato (no authentication required)
+POST http://localhost:8080/api/candidatos
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "testuser@example.com",
+  "senha": "123456",
+  "nome": "Test User",
+  "cpf": "12345678901",
+  "bio": "This is a test user.",
+  "contatos": [],
+  "habilidades": []
+}
