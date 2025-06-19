@@ -49,7 +49,6 @@ public class Candidatura {
     private LocalDateTime dataCriacao;
 
     public Candidatura(Candidato candidato, Vaga vaga) {
-        this.id = UUID.randomUUID();
         this.candidato = candidato;
         this.vaga = vaga;
         this.statusCandidatura = true;
