@@ -25,8 +25,11 @@ import com.squad17.pcdevapi.models.candidato.Candidato;
 import com.squad17.pcdevapi.models.contato.Contato;
 import com.squad17.pcdevapi.models.dto.candidato.CandidatoDTO;
 import com.squad17.pcdevapi.models.dto.candidato.CandidatoResponseDTO;
+import com.squad17.pcdevapi.models.dto.endereco.EnderecoDTO;
+import com.squad17.pcdevapi.models.endereco.Endereco;
 import com.squad17.pcdevapi.models.habilidade.Habilidade;
 import com.squad17.pcdevapi.repository.candidato.CandidatoRepository;
+import com.squad17.pcdevapi.repository.endereco.EnderecoRepository;
 
 import jakarta.validation.Valid;
 
@@ -36,6 +39,9 @@ public class CandidatoController {
 
     @Autowired
     private CandidatoRepository candidatoRepository;
+
+    @Autowired
+    private EnderecoRepository enderecoRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -69,6 +75,7 @@ public class CandidatoController {
         return ResponseEntity.ok(convertToResponseDTO(savedCandidato));
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/{id}")
     public ResponseEntity<CandidatoResponseDTO> updateCandidato(@PathVariable UUID id, @Valid @RequestBody CandidatoDTO candidatoDTO) {
         if (!candidatoRepository.existsById(id)) {
@@ -85,6 +92,7 @@ public class CandidatoController {
         return ResponseEntity.ok(convertToResponseDTO(updatedCandidato));
     }
 
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCandidato(@PathVariable UUID id) {
         if (!candidatoRepository.existsById(id)) {
@@ -116,6 +124,20 @@ public class CandidatoController {
             dto.getHabilidades().forEach(habilidadeNome -> habilidades.add(new Habilidade(habilidadeNome, 0, null)));
         }
 
+        EnderecoDTO enderecoDTO = dto.getEndereco();
+        Endereco endereco = new Endereco(
+            enderecoDTO.getRua(),
+            enderecoDTO.getBairro(),
+            enderecoDTO.getCidade(),
+            enderecoDTO.getEstado(),
+            enderecoDTO.getCep(),
+            enderecoDTO.getNumero(),
+            enderecoDTO.getComplemento(),
+            enderecoDTO.getPontoReferencia(),
+            enderecoDTO.getPais()
+        );
+
+        endereco = enderecoRepository.save(endereco);
 
         return new Candidato(
             dto.getUsername(),
@@ -123,7 +145,7 @@ public class CandidatoController {
             dto.getSenha(),
             dto.getNome(),
             dto.getCpf(),
-            dto.getEndereco(),
+            endereco,
             dto.getTipoDeficiencia(),
             new ArrayList<>(),
             habilidades,

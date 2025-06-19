@@ -3,6 +3,7 @@ package com.squad17.pcdevapi.models.dto.candidato;
 import java.util.List;
 import java.util.UUID;
 
+import com.squad17.pcdevapi.models.dto.endereco.EnderecoDTO;
 import com.squad17.pcdevapi.models.endereco.Endereco;
 import com.squad17.pcdevapi.models.enums.TipoDeficiencia;
 
@@ -30,8 +31,8 @@ public class CandidatoDTO {
 
     private String bio;
 
-    // @NotNull(message = "Endereço é obrigatório")
-    private Endereco endereco;
+    @NotNull(message = "Endereço é obrigatório")
+    private EnderecoDTO endereco;
 
     // @NotNull(message = "Tipo de deficiência é obrigatório")
     private TipoDeficiencia tipoDeficiencia;

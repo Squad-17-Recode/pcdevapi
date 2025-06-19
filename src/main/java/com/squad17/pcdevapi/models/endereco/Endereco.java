@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Endereco {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", columnDefinition = "UUID")
@@ -68,7 +67,6 @@ public class Endereco {
     private String pais;
 
     public Endereco(String rua, String bairro, String cidade, String estado, String cep, String numero, String complemento, String pontoReferencia, String pais) {
-        this.id = UUID.randomUUID();
         this.rua = rua;
         this.bairro = bairro;
         this.cidade = cidade;

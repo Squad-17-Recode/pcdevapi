@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.squad17.pcdevapi.models.candidatura.Candidatura;
 import com.squad17.pcdevapi.models.conta.Conta;
 import com.squad17.pcdevapi.models.contato.Contato;
+import com.squad17.pcdevapi.models.dto.endereco.EnderecoDTO;
 import com.squad17.pcdevapi.models.endereco.Endereco;
 import com.squad17.pcdevapi.models.enums.TipoDeficiencia;
 import com.squad17.pcdevapi.models.habilidade.Habilidade;
@@ -46,8 +47,9 @@ public class Candidato extends Conta {
     @Column(name = "bio", length = 250)
     private String bio;
 
+    @NotNull(message = "Endereço é obrigatório")
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "endereco")
+    @JoinColumn(name = "endereco", nullable = false)
     private Endereco endereco;
 
     @Column(name = "tipo_deficiencia")
