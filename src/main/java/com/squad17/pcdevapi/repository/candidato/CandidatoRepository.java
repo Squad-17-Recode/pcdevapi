@@ -11,6 +11,8 @@ public interface CandidatoRepository extends JpaRepository<Candidato, UUID> {
 
     Optional<Candidato> findByUsername(String username);
 
+    Optional<Candidato> findByEmail(String email);
+
     boolean existsByUsername(String username);
 
     boolean existsByEmail(String email);

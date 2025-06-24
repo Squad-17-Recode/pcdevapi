@@ -56,4 +56,7 @@ public class Empresa extends Conta {
         this.cnpj = cnpj;
         this.endereco = endereco;
     }
+
+    public void setEndereco(String endereco) {
+    }
 }
