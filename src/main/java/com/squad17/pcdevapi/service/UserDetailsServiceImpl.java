@@ -25,11 +25,22 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        return empresaRepository.findByEmail(login)
-                .map(EmpresaUserDetails::new)
-                .or(() -> empresaRepository.findByUsername(login).map(EmpresaUserDetails::new))
-                .or(() -> candidatoRepository.findByEmail(login).map(CandidatoUserDetails::new))
-                .or(() -> candidatoRepository.findByUsername(login).map(CandidatoUserDetails::new))
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com email ou username: " + login));
+        Optional<Empresa> empresa = empresaRepository.findByEmail(login);
+        if (empresa.isPresent()) {
+            return new EmpresaUserDetails(empresa.get());
+        }
+        empresa = empresaRepository.findByUsername(login);
+        if (empresa.isPresent()) {
+            return new EmpresaUserDetails(empresa.get());
+        }
+        Optional<Candidato> candidato = candidatoRepository.findByEmail(login);
+        if (candidato.isPresent()) {
+            return new CandidatoUserDetails(candidato.get());
+        }
+        candidato = candidatoRepository.findByUsername(login);
+        if (candidato.isPresent()) {
+            return new CandidatoUserDetails(candidato.get());
+        }
+        throw new UsernameNotFoundException("Usuário não encontrado com email ou username: " + login);
     }
 }

@@ -89,4 +89,24 @@ public class AuthController {
         candidatoRepository.save(candidato);
         return ResponseEntity.ok("Candidato cadastrado com sucesso");
     }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestParam String username, @RequestParam String novaSenha) {
+        // Procura o usuário (empresa ou candidato)
+        Conta conta = candidatoRepository.findByUsername(username)
+                .map(c -> (Conta) c)
+                .orElseGet(() -> empresaRepository.findByUsername(username).map(e -> (Conta) e).orElse(null));
+
+        if (conta == null) {
+            return ResponseEntity.status(404).body("Usuário não encontrado");
+        }
+
+        conta.setSenha(passwordEncoder.encode(novaSenha));
+        if (conta instanceof Candidato) {
+            candidatoRepository.save((Candidato) conta);
+        } else if (conta instanceof Empresa) {
+            empresaRepository.save((Empresa) conta);
+        }
+        return ResponseEntity.ok("Senha alterada com sucesso");
+    }
 }
