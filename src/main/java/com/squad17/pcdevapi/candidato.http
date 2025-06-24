@@ -1,0 +1,26 @@
+### Create Candidato (no authentication required)
+POST http://localhost:8080/api/candidatos
+Content-Type: application/json
+
+{
+  "username": "aaaaaa",
+  "email": "ppppp@gmail.com",
+  "senha": "123456",
+  "nome": "Test User",
+  "cpf": "99988844421",
+  "bio": "This is a test user.",
+  "endereco": {
+    "rua": "Rua das Flores",
+    "bairro": "Centro",
+    "cidade": "São Paulo",
+    "estado": "SP",
+    "cep": "12345678",
+    "numero": "100",
+    "complemento": "Apto 1",
+    "pontoReferencia": "Próximo ao parque",
+    "pais": "Brasil"
+  },
+  "tipoDeficiencia": "FISICA",
+  "contatos": [],
+  "habilidades": []
+}

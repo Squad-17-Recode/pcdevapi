@@ -1,84 +1,77 @@
 package com.squad17.pcdevapi.models.candidato;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import com.squad17.pcdevapi.models.candidatura.Candidatura;
+import com.squad17.pcdevapi.models.conta.Conta;
 import com.squad17.pcdevapi.models.contato.Contato;
+import com.squad17.pcdevapi.models.dto.endereco.EnderecoDTO;
 import com.squad17.pcdevapi.models.endereco.Endereco;
 import com.squad17.pcdevapi.models.enums.TipoDeficiencia;
-import com.squad17.pcdevapi.models.experiencia.Experiencia;
-import com.squad17.pcdevapi.models.pessoa_fisica.PessoaFisica;
+import com.squad17.pcdevapi.models.habilidade.Habilidade;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-@Getter @Setter
 @Entity
-public class Candidato extends PessoaFisica {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
-
-    @Column(name = "nome", nullable = false, length = 100)
-    private String nome;
-
-    @Column(name = "cpf", nullable = false, unique = true, length = 14)
+@Table(name = "candidato")
+@Data
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class Candidato extends Conta {
+    @NotNull
+    @Size(max = 11, message = "CPF deve ter no máximo 11 caracteres")
+    @Column(name = "cpf", length = 11, nullable = false)
     private String cpf;
 
-    @NotNull(message = "Nome de Usuário é obrigatório")
-    @Column(name = "username", nullable = false, unique = true, length = 50)
-    private String username;
-
-    @NotNull(message = "E-mail da empresa é obrigatório")
-    @Column(name = "email", nullable = false, unique = true, length = 100)
-    private String email;
-
-    @NotNull(message = "Senha não pode ficar em branco")
-    @Column(name = "senha", nullable = false)
-    private String senha;
-
-    @Column(name = "bio", length = 500)
+    @Size(max = 250, message = "Bio deve ter no máximo 250 caracteres")
+    @Column(name = "bio", length = 250)
     private String bio;
-    
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+
+    @NotNull(message = "Endereço é obrigatório")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "endereco", nullable = false)
     private Endereco endereco;
 
+    @Column(name = "tipo_deficiencia")
     @Enumerated(EnumType.STRING)
     private TipoDeficiencia tipoDeficiencia;
 
-    @OneToMany(mappedBy = "candidato", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Candidatura> candidaturas;
+    @OneToMany(mappedBy = "candidato", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Candidatura> candidaturas = new ArrayList<>();
 
-    @OneToMany(mappedBy = "candidato", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Experiencia> experiencias;
+    @OneToMany(mappedBy = "candidato", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Habilidade> habilidades = new ArrayList<>();
 
-    @OneToMany(mappedBy = "candidato", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Contato> contatos;
+    @OneToMany(mappedBy = "candidato", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Contato> contatos = new ArrayList<>();
 
-    public Candidato() {
-    }
-    
-    public Candidato(String username, String email, String senha, String nome, String cpf, Endereco endereco, TipoDeficiencia tipoDeficiencia, List<Candidatura> candidaturas, List<Experiencia> experiencias, List<Contato> contatos) {
-        super(username, email, senha, nome, cpf, contatos);
+    public Candidato(String username, String email, String senha, String nome, String cpf, Endereco endereco, TipoDeficiencia tipoDeficiencia, ArrayList<Candidatura> candidaturas, ArrayList<Habilidade> habilidades, ArrayList<Contato> contatos, PasswordEncoder passwordEncoder) {
+        super(username, email, senha, nome, passwordEncoder);
         this.cpf = cpf;
         this.endereco = endereco;
         this.tipoDeficiencia = tipoDeficiencia;
         this.candidaturas = candidaturas;
-        this.experiencias = experiencias;
+        this.habilidades = habilidades;
         this.contatos = contatos;
     }
 }

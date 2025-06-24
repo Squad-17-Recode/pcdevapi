@@ -1,7 +1,6 @@
 package com.squad17.pcdevapi.config;
 
-import com.squad17.pcdevapi.security.EmpresaUserDetails;
-import com.squad17.pcdevapi.security.CandidatoUserDetails;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -9,6 +8,9 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
+import com.squad17.pcdevapi.models.conta.Conta;
+
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,19 +27,19 @@ public class JwtUtils {
     private long jwtExpiration;
 
     public String extractUsername(String token) {
-        return extractClaim(token, io.jsonwebtoken.Claims::getSubject);
+        return extractClaim(token, Claims::getSubject);
     }
 
     public Date extractExpiration(String token) {
-        return extractClaim(token, io.jsonwebtoken.Claims::getExpiration);
+        return extractClaim(token, Claims::getExpiration);
     }
 
-    public <T> T extractClaim(String token, Function<io.jsonwebtoken.Claims, T> claimsResolver) {
-        final io.jsonwebtoken.Claims claims = extractAllClaims(token);
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    private io.jsonwebtoken.Claims extractAllClaims(String token) {
+    private Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()
                 .setSigningKey(getSigningKey())
@@ -50,19 +52,9 @@ public class JwtUtils {
         return extractExpiration(token).before(new Date());
     }
 
-    // Adiciona o claim "tipo" ao token
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(Conta conta) {
         Map<String, Object> claims = new HashMap<>();
-        String tipo;
-        if (userDetails instanceof EmpresaUserDetails) {
-            tipo = "empresa";
-        } else if (userDetails instanceof CandidatoUserDetails) {
-            tipo = "candidato";
-        } else {
-            tipo = "desconhecido";
-        }
-        claims.put("tipo", tipo);
-        return createToken(claims, userDetails.getUsername());
+        return createToken(claims, conta.getUsername());
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
@@ -83,10 +75,5 @@ public class JwtUtils {
     private Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         return Keys.hmacShaKeyFor(keyBytes);
-    }
-
-    // Método para extrair o claim "tipo"
-    public String extractTipo(String token) {
-        return extractClaim(token, claims -> claims.get("tipo", String.class));
     }
 }

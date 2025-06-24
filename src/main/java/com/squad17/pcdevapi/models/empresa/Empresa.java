@@ -1,133 +1,59 @@
 package com.squad17.pcdevapi.models.empresa;
 
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-/**
- * Entidade que representa uma empresa no sistema.
- * Contém informações básicas da empresa como dados de contato,
- * descrição e foto de perfil.
- *
- * @author Lucas Costa
- * @author squad 17
- * @version 1.0
- * @since 1.0
- */
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.squad17.pcdevapi.models.conta.Conta;
+import com.squad17.pcdevapi.models.endereco.Endereco;
+
 @Entity
 @Table(name = "empresa")
 @Data
 @NoArgsConstructor
-public class Empresa {
-    // ATRIBUTOS
-    /**
-     * Identificador único da empresa.
-     * Chave primária gerada automaticamente.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    private UUID id;
-
-    /**
-     * CNPJ da empresa.
-     * Campo obrigatório com máximo de 250 caracteres.
-     */
+@EqualsAndHashCode(callSuper = true)
+public class Empresa extends Conta {
     @NotNull(message = "CNPJ da empresa é obrigatório")
     @Column(name = "cnpj", length = 250, nullable = false)
     private String cnpj;
 
-    /**
-     * Descrição detalhada da empresa.
-     * Campo opcional com máximo de 250 caracteres.
-     */
     @Column(name = "descricao", length = 250)
     private String descricao;
 
-    /**
-     * Nome de usuário da empresa.
-     * Campo obrigatório com máximo de 50 caracteres.
-     */
-    @NotNull(message = "Nome de Usuário é obrigatório")
-    @Column(name = "username", nullable = false, unique = true, length = 50)
-    private String username;
-
-    /**
-     * Senha de acesso da empresa.
-     * Campo obrigatório com máximo de 100 caracteres.
-     */
-    @NotNull(message = "Senha não pode ficar em branco")
+    @NotNull(message = "Senha não pode ser nula")
     @Column(name = "senha", length = 100, nullable = false)
     private String senha;
 
-    /**
-     * Email de contato da empresa.
-     * Campo obrigatório com máximo de 100 caracteres.
-     */
     @NotNull(message = "E-mail da empresa é obrigatório")
     @Column(name = "email", length = 100, nullable = false)
     private String email;
 
-    /**
-     * Foto de perfil da empresa.
-     * Campo opcional armazenado como TEXT.
-     */
     @Column(name = "foto_perfil", columnDefinition = "TEXT")
     private String fotoPerfil;
 
-    /**
-     * Biografia ou informações adicionais da empresa.
-     * Campo opcional com máximo de 500 caracteres.
-     */
-    @Column(name = "bio", length = 500)
-    private String bio;
+    @NotNull(message = "Endereço é obrigatório")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "endereco_id", referencedColumnName = "id", insertable = false, updatable = true, nullable = false)
+    private Endereco endereco;
 
-    /**
-     * ID do endereço associado à empresa.
-     * Campo obrigatório com máximo de 500 caracteres.
-     */
-    @NotNull(message = "ID do endereço é obrigatório")
-    @Column(name = "endereco_id", length = 500, nullable = false)
-    private String enderecoId;
-
-    //CONSTRUTORES
-    /**
-     * Construtor completo para criação de uma nova empresa.
-     *
-     * @param cnpj CNPJ da empresa
-     * @param descricao Descrição da empresa
-     * @param senha Senha de acesso
-     * @param email Email de contato
-     * @param fotoPerfil Foto de perfil
-     * @param bio Biografia da empresa
-     * @param enderecoId ID do endereço
-     */
-    public Empresa(String cnpj, String descricao, String senha, String email,
-                   String fotoPerfil, String bio, String enderecoId) {
+    public Empresa(String cnpj, String username, String nome, String descricao, String senha, String email, String fotoPerfil, String bio, Endereco endereco, PasswordEncoder passwordEncoder) {
+        super(username, email, senha, nome, passwordEncoder);
         this.cnpj = cnpj;
         this.descricao = descricao;
-        this.senha = senha;
-        this.email = email;
         this.fotoPerfil = fotoPerfil;
-        this.bio = bio;
-        this.enderecoId = enderecoId;
+        this.endereco = endereco;
     }
 
-    /**
-     * Construtor para criação de empresa com campos obrigatórios.
-     *
-     * @param cnpj CNPJ da empresa
-     * @param senha Senha de acesso
-     * @param email Email de contato
-     * @param enderecoId ID do endereço
-     */
-    public Empresa(String cnpj, String senha, String email, String enderecoId) {
+    public Empresa(String cnpj, String username, String email, String senha, String nome, Endereco endereco, PasswordEncoder passwordEncoder) {
+        super(username, email, senha, nome, passwordEncoder);
         this.cnpj = cnpj;
-        this.senha = senha;
-        this.email = email;
-        this.enderecoId = enderecoId;
+        this.endereco = endereco;
     }
 }
