@@ -1,6 +1,5 @@
 package com.squad17.pcdevapi.models.vaga;
 
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -28,7 +27,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 public class Vaga {
-
+    // ATRIBUTOS
     /**
      * Identificador único da vaga.
      * Chave primária gerada automaticamente como UUID.
@@ -86,8 +85,8 @@ public class Vaga {
     private Boolean statusVaga = true;
 
     /**
-     * Data de início do período de candidaturas.
-     * Define quando os candidatos podem começar a se inscrever na vaga.
+     * Data de fim do período de candidaturas.
+     * Define até quando os candidatos podem se inscrever na vaga.
      * Campo obrigatório.
      */
     @NotNull(message = "Data de fim da candidatura é obrigatória")
@@ -103,10 +102,18 @@ public class Vaga {
     @Column(name = "data_fim_ultima_etapa", nullable = false)
     private LocalDate dataFimUltimaEtapa;
 
+    /**
+     * Lista de tags associadas à vaga.
+     * Utiliza uma coleção de elementos simples (String) persistida em tabela separada.
+     * Cada tag representa uma palavra-chave ou tecnologia relacionada à vaga.
+     * Mapeada para a tabela vaga_tags, vinculada pelo id da vaga.
+     */
     @ElementCollection
     @CollectionTable(name = "vaga_tags", joinColumns = @JoinColumn(name = "vaga_id"))
     @Column(name = "tag")
     private ArrayList<String> tags;
+
+    // CONSTRUTORES
     /**
      * Construtor completo para criação de uma nova vaga.
      *
@@ -174,6 +181,7 @@ public class Vaga {
         this(empresaId, nomeCargo, null, null, true, dataFimCandidatura, dataFimUltimaEtapa);
     }
 
+    // MÉTODOS AUXILIARES
     /**
      * Verifica se a vaga está atualmente disponível para candidaturas.
      * Considera tanto o status da vaga quanto a data limite de candidatura.
@@ -204,16 +212,6 @@ public class Vaga {
      */
     public void reativarVaga() {
         this.statusVaga = true;
-    }
-
-    /**
-     * Verifica se o processo seletivo da vaga já foi finalizado.
-     *
-     * @return true se a data atual é posterior à data fim da última etapa
-     */
-    public boolean isProcessoFinalizado() {
-        LocalDate hoje = LocalDate.now();
-        return hoje.isAfter(dataFimUltimaEtapa);
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.squad17.pcdevapi.models.empresa;
 
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -23,7 +22,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 public class Empresa {
-
+    // ATRIBUTOS
     /**
      * Identificador único da empresa.
      * Chave primária gerada automaticamente.
@@ -49,10 +48,18 @@ public class Empresa {
     private String descricao;
 
     /**
+     * Nome de usuário da empresa.
+     * Campo obrigatório com máximo de 50 caracteres.
+     */
+    @NotNull(message = "Nome de Usuário é obrigatório")
+    @Column(name = "username", nullable = false, unique = true, length = 50)
+    private String username;
+
+    /**
      * Senha de acesso da empresa.
      * Campo obrigatório com máximo de 100 caracteres.
      */
-    @NotNull(message = "Senha não pode ser nula")
+    @NotNull(message = "Senha não pode ficar em branco")
     @Column(name = "senha", length = 100, nullable = false)
     private String senha;
 
@@ -86,6 +93,7 @@ public class Empresa {
     @Column(name = "endereco_id", length = 500, nullable = false)
     private String enderecoId;
 
+    //CONSTRUTORES
     /**
      * Construtor completo para criação de uma nova empresa.
      *
