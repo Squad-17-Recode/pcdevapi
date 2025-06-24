@@ -25,6 +25,10 @@ public class CandidatoUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
+        return candidato.getUsername();
+    }
+
+    public String getEmail() {
         return candidato.getEmail();
     }
 

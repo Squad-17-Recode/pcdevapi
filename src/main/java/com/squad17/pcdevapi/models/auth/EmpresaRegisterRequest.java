@@ -11,5 +11,5 @@ public class EmpresaRegisterRequest {
     private String email;
     private String fotoPerfil;
     private String bio;
-    private String enderecoId;
+    private String endereco;
 }

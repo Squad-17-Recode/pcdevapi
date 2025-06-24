@@ -10,21 +10,33 @@ public class EmpresaUserDetails implements UserDetails {
     private final Empresa empresa;
 
     public EmpresaUserDetails(Empresa empresa) {
+
         this.empresa = empresa;
+
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+
         return Collections.emptyList();
+
     }
 
     @Override
     public String getPassword() {
+
         return empresa.getSenha();
+
     }
 
     @Override
     public String getUsername() {
+
+        return empresa.getUsername();
+
+    }
+
+    public String getEmail() {
         return empresa.getEmail();
     }
 
