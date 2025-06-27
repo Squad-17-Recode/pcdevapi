@@ -2,7 +2,6 @@ package com.squad17.pcdevapi.models.candidato;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
