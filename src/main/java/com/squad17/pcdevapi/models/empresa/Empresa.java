@@ -19,7 +19,7 @@ import com.squad17.pcdevapi.models.endereco.Endereco;
 @EqualsAndHashCode(callSuper = true)
 public class Empresa extends Conta {
     @NotNull(message = "CNPJ da empresa é obrigatório")
-    @Column(name = "cnpj", length = 250, nullable = false)
+    @Column(name = "cnpj", length = 30, nullable = false)
     private String cnpj;
 
     @Column(name = "descricao", length = 250)

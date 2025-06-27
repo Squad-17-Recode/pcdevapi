@@ -56,9 +56,6 @@ public class Candidato extends Conta {
     @OneToMany(mappedBy = "candidato", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Habilidade> habilidades = new ArrayList<>();
 
-    @OneToMany(mappedBy = "candidato", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Contato> contatos = new ArrayList<>();
-
     public Candidato(String username, String email, String senha, String nome, String cpf, Endereco endereco, TipoDeficiencia tipoDeficiencia, ArrayList<Candidatura> candidaturas, ArrayList<Habilidade> habilidades, ArrayList<Contato> contatos, PasswordEncoder passwordEncoder) {
         super(username, email, senha, nome, passwordEncoder);
         this.cpf = cpf;
@@ -66,6 +63,6 @@ public class Candidato extends Conta {
         this.tipoDeficiencia = tipoDeficiencia;
         this.candidaturas = candidaturas;
         this.habilidades = habilidades;
-        this.contatos = contatos;
+        this.setContatos(contatos);
     }
 }
