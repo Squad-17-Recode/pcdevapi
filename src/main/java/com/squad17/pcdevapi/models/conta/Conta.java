@@ -2,16 +2,14 @@ package com.squad17.pcdevapi.models.conta;
 
 import java.util.UUID;
 
+import com.squad17.pcdevapi.models.endereco.Endereco;
+import jakarta.persistence.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import jakarta.persistence.MappedSuperclass;
 
 @Data
 @NoArgsConstructor
@@ -40,6 +38,11 @@ public abstract class Conta {
     @Size(max = 250, message = "Nome deve ter no máximo 250 caracteres")
     @Column(name = "nome", length = 250, nullable = false)
     private String nome;
+
+    @NotNull(message = "Endereço é obrigatório")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "endereco_id", referencedColumnName = "id", insertable = false, updatable = true, nullable = false)
+    private Endereco endereco;
 
     public void setSenha(String senha, PasswordEncoder passwordEncoder) {
         this.senha = passwordEncoder.encode(senha);
