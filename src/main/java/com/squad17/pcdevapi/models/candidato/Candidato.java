@@ -47,11 +47,6 @@ public class Candidato extends Conta {
     @Column(name = "bio", length = 250)
     private String bio;
 
-    @NotNull(message = "Endereço é obrigatório")
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "endereco", nullable = false)
-    private Endereco endereco;
-
     @Column(name = "tipo_deficiencia")
     @Enumerated(EnumType.STRING)
     private TipoDeficiencia tipoDeficiencia;
@@ -68,7 +63,7 @@ public class Candidato extends Conta {
     public Candidato(String username, String email, String senha, String nome, String cpf, Endereco endereco, TipoDeficiencia tipoDeficiencia, ArrayList<Candidatura> candidaturas, ArrayList<Habilidade> habilidades, ArrayList<Contato> contatos, PasswordEncoder passwordEncoder) {
         super(username, email, senha, nome, passwordEncoder);
         this.cpf = cpf;
-        this.endereco = endereco;
+        this.setEndereco(endereco);
         this.tipoDeficiencia = tipoDeficiencia;
         this.candidaturas = candidaturas;
         this.habilidades = habilidades;
