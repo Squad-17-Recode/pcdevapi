@@ -24,7 +24,14 @@ public abstract class ContaDetailsServiceImpl implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
-        return (UserDetails) user;
+        // Verifica o tipo de usuário e retorna o UserDetails correspondente
+        if (user instanceof com.squad17.pcdevapi.models.candidato.Candidato) {
+            return new com.squad17.pcdevapi.security.CandidatoUserDetails((com.squad17.pcdevapi.models.candidato.Candidato) user);
+        } else if (user instanceof com.squad17.pcdevapi.models.empresa.Empresa) {
+            return new com.squad17.pcdevapi.security.EmpresaUserDetails((com.squad17.pcdevapi.models.empresa.Empresa) user);
+        } else {
+            throw new UsernameNotFoundException("Tipo de usuário desconhecido para username: " + username);
+        }
     }
 
     protected abstract Conta findByUsername(String username);
