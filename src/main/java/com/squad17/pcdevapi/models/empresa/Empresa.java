@@ -1,18 +1,22 @@
 package com.squad17.pcdevapi.models.empresa;
 
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-import java.util.UUID;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.squad17.pcdevapi.models.conta.Conta;
 import com.squad17.pcdevapi.models.endereco.Endereco;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "empresa")
@@ -39,11 +43,11 @@ public class Empresa extends Conta {
     private String fotoPerfil;
 
     @NotNull(message = "Endereço é obrigatório")
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "endereco_id", referencedColumnName = "id", insertable = false, updatable = true, nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "endereco_id", referencedColumnName = "id")
     private Endereco endereco;
 
-    public Empresa(String cnpj, String username, String nome, String descricao, String senha, String email, String fotoPerfil, String bio, Endereco endereco, PasswordEncoder passwordEncoder) {
+    public Empresa(String cnpj, String username, String nome, String descricao, String senha, String email, String fotoPerfil, Endereco endereco, PasswordEncoder passwordEncoder) {
         super(username, email, senha, nome, passwordEncoder);
         this.cnpj = cnpj;
         this.descricao = descricao;
@@ -55,8 +59,5 @@ public class Empresa extends Conta {
         super(username, email, senha, nome, passwordEncoder);
         this.cnpj = cnpj;
         this.endereco = endereco;
-    }
-
-    public void setEndereco(String endereco) {
     }
 }
