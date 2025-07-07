@@ -85,7 +85,6 @@ public class AuthController {
         candidato.setEmail(request.getEmail());
         candidato.setSenha(passwordEncoder.encode(request.getSenha()));
         candidato.setBio(request.getBio());
-        // Buscar e setar endereço se necessário
         candidatoRepository.save(candidato);
         return ResponseEntity.ok("Candidato cadastrado com sucesso");
     }
