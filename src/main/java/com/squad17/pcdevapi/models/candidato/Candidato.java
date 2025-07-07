@@ -47,6 +47,7 @@ public class Candidato extends Conta {
     @Column(name = "bio", length = 250)
     private String bio;
 
+    @NotNull(message = "Endereço é obrigatório")
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "endereco", nullable = false)
     private Endereco endereco;
