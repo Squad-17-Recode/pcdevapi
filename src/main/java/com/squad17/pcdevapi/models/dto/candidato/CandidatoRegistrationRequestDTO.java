@@ -1,4 +1,4 @@
-package com.squad17.pcdevapi.models.auth;
+package com.squad17.pcdevapi.models.dto.candidato;
 
 import lombok.Data;
 
