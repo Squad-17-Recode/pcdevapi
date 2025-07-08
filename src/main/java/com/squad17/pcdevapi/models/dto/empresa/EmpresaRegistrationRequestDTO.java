@@ -15,6 +15,9 @@ public class EmpresaRegistrationRequestDTO {
     @Size(min = 14, max = 14, message = "CNPJ deve ter 14 dígitos")
     private String cnpj;
 
+    @NotBlank(message = "Nome é obrigatório")
+    private String nome;
+
     @NotBlank(message = "Descrição é obrigatória")
     private String descricao;
 

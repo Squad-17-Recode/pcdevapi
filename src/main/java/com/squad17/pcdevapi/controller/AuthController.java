@@ -1,5 +1,17 @@
 package com.squad17.pcdevapi.controller;
 
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.squad17.pcdevapi.config.JwtUtils;
 import com.squad17.pcdevapi.models.candidato.Candidato;
 import com.squad17.pcdevapi.models.conta.Conta;
@@ -12,14 +24,8 @@ import com.squad17.pcdevapi.models.empresa.Empresa;
 import com.squad17.pcdevapi.models.endereco.Endereco;
 import com.squad17.pcdevapi.repository.candidato.CandidatoRepository;
 import com.squad17.pcdevapi.repository.empresa.EmpresaRepository;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -58,15 +64,16 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Email ou username já cadastrado");
         }
 
-        Empresa empresa = new Empresa();
-        empresa.setCnpj(request.getCnpj());
-        empresa.setDescricao(request.getDescricao());
-        empresa.setUsername(request.getUsername());
-        empresa.setSenha(passwordEncoder.encode(request.getSenha()));
-        empresa.setEmail(request.getEmail());
-        empresa.setFotoPerfil(request.getFotoPerfil());
-        empresa.setEndereco(createEnderecoFromDTO(request.getEndereco()));
-
+        Empresa empresa = new Empresa(
+                request.getCnpj(),
+                request.getUsername(),
+                request.getNome(),
+                request.getDescricao(),
+                request.getSenha(),
+                request.getEmail(),
+                request.getFotoPerfil(),
+                createEnderecoFromDTO(request.getEndereco()),
+                passwordEncoder);
         empresaRepository.save(empresa);
 
         String token = jwtUtils.generateToken(empresa);
@@ -79,15 +86,14 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Email ou username já cadastrado");
         }
 
-        Candidato candidato = new Candidato();
-        candidato.setNome(request.getNome());
-        candidato.setCpf(request.getCpf());
-        candidato.setUsername(request.getUsername());
-        candidato.setEmail(request.getEmail());
-        candidato.setSenha(passwordEncoder.encode(request.getSenha()));
-        candidato.setBio(request.getBio());
-        candidato.setEndereco(createEnderecoFromDTO(request.getEndereco()));
-
+        Candidato candidato = new Candidato(
+                request.getUsername(),
+                request.getEmail(),
+                request.getSenha(),
+                request.getNome(),
+                request.getCpf(),
+                createEnderecoFromDTO(request.getEndereco()),
+                passwordEncoder);
         candidatoRepository.save(candidato);
 
         String token = jwtUtils.generateToken(candidato);
@@ -131,17 +137,17 @@ public class AuthController {
         if (dto == null) {
             return null;
         }
-        Endereco endereco = new Endereco();
-        endereco.setRua(dto.getRua());
-        endereco.setBairro(dto.getBairro());
-        endereco.setCidade(dto.getCidade());
-        endereco.setEstado(dto.getEstado());
-        endereco.setCep(dto.getCep());
-        endereco.setNumero(dto.getNumero());
-        endereco.setComplemento(dto.getComplemento());
-        endereco.setPontoReferencia(dto.getPontoReferencia());
-        endereco.setPais(dto.getPais());
-        return endereco;
+        return new Endereco(
+                null, // O ID será gerado pelo JPA
+                dto.getRua(),
+                dto.getBairro(),
+                dto.getCidade(),
+                dto.getEstado(),
+                dto.getCep(),
+                dto.getNumero(),
+                dto.getComplemento(),
+                dto.getPontoReferencia(),
+                dto.getPais());
     }
 
     private void saveConta(Conta conta) {

@@ -2,28 +2,21 @@ package com.squad17.pcdevapi.models.candidato;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.squad17.pcdevapi.models.candidatura.Candidatura;
 import com.squad17.pcdevapi.models.conta.Conta;
 import com.squad17.pcdevapi.models.contato.Contato;
-import com.squad17.pcdevapi.models.dto.endereco.EnderecoDTO;
 import com.squad17.pcdevapi.models.endereco.Endereco;
 import com.squad17.pcdevapi.models.enums.TipoDeficiencia;
 import com.squad17.pcdevapi.models.habilidade.Habilidade;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -47,11 +40,6 @@ public class Candidato extends Conta {
     @Column(name = "bio", length = 250)
     private String bio;
 
-    @NotNull(message = "Endereço é obrigatório")
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "endereco", nullable = false)
-    private Endereco endereco;
-
     @Column(name = "tipo_deficiencia")
     @Enumerated(EnumType.STRING)
     private TipoDeficiencia tipoDeficiencia;
@@ -65,13 +53,8 @@ public class Candidato extends Conta {
     @OneToMany(mappedBy = "candidato", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Contato> contatos = new ArrayList<>();
 
-    public Candidato(String username, String email, String senha, String nome, String cpf, Endereco endereco, TipoDeficiencia tipoDeficiencia, ArrayList<Candidatura> candidaturas, ArrayList<Habilidade> habilidades, ArrayList<Contato> contatos, PasswordEncoder passwordEncoder) {
-        super(username, email, senha, nome, passwordEncoder);
+    public Candidato(String username, String email, String senha, String nome, String cpf, Endereco endereco, PasswordEncoder passwordEncoder) {
+        super(username, email, senha, nome, endereco, passwordEncoder);
         this.cpf = cpf;
-        this.endereco = endereco;
-        this.tipoDeficiencia = tipoDeficiencia;
-        this.candidaturas = candidaturas;
-        this.habilidades = habilidades;
-        this.contatos = contatos;
     }
 }
