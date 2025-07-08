@@ -54,42 +54,6 @@ public class AuthController {
         return ResponseEntity.ok(new LoginResponseDTO(token));
     }
 
-    @PostMapping("/signup/empresa")
-    public ResponseEntity<?> registerEmpresa(@RequestBody EmpresaRegisterRequest request) {
-        if (empresaRepository.findByEmail(request.getEmail()).isPresent() ||
-                empresaRepository.findByUsername(request.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest().body("Email ou username já cadastrado");
-        }
-        Empresa empresa = new Empresa();
-        empresa.setCnpj(request.getCnpj());
-        empresa.setDescricao(request.getDescricao());
-        empresa.setUsername(request.getUsername());
-        empresa.setSenha(passwordEncoder.encode(request.getSenha()));
-        empresa.setEmail(request.getEmail());
-        empresa.setFotoPerfil(request.getFotoPerfil());
-        empresa.setEndereco(request.getEndereco());
-        empresaRepository.save(empresa);
-        return ResponseEntity.ok("Empresa cadastrada com sucesso");
-    }
-
-    @PostMapping("/signup/candidato")
-    public ResponseEntity<?> registerCandidato(@RequestBody CandidatoRegisterRequest request) {
-        if (candidatoRepository.findByEmail(request.getEmail()).isPresent() ||
-                candidatoRepository.findByUsername(request.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest().body("Email ou username já cadastrado");
-        }
-        Candidato candidato = new Candidato();
-        candidato.setNome(request.getNome());
-        candidato.setCpf(request.getCpf());
-        candidato.setUsername(request.getUsername());
-        candidato.setEmail(request.getEmail());
-        candidato.setSenha(passwordEncoder.encode(request.getSenha()));
-        candidato.setBio(request.getBio());
-        // Buscar e setar endereço se necessário
-        candidatoRepository.save(candidato);
-        return ResponseEntity.ok("Candidato cadastrado com sucesso");
-    }
-
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestParam String username, @RequestParam String novaSenha) {
         // Procura o usuário (empresa ou candidato)
