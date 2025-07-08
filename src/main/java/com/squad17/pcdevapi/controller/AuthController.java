@@ -11,8 +11,6 @@ import com.squad17.pcdevapi.models.candidato.Candidato;
 import com.squad17.pcdevapi.models.empresa.Empresa;
 import com.squad17.pcdevapi.models.dto.login.LoginRequestDTO;
 import com.squad17.pcdevapi.models.dto.login.LoginResponseDTO;
-import com.squad17.pcdevapi.models.auth.EmpresaRegisterRequest;
-import com.squad17.pcdevapi.models.auth.CandidatoRegisterRequest;
 import com.squad17.pcdevapi.repository.candidato.CandidatoRepository;
 import com.squad17.pcdevapi.repository.empresa.EmpresaRepository;
 
