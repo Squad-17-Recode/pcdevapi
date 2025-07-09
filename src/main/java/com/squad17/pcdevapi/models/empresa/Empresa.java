@@ -9,7 +9,6 @@ import com.squad17.pcdevapi.models.enums.Role;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -21,7 +20,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@PrimaryKeyJoinColumn(name = "conta_id", referencedColumnName = "id")
 public class Empresa extends Conta {
     @NotNull(message = "CNPJ da empresa é obrigatório")
     @Column(name = "cnpj", length = 250, nullable = false)
