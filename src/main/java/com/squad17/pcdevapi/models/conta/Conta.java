@@ -5,18 +5,22 @@ import java.util.UUID;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.squad17.pcdevapi.models.endereco.Endereco;
+import com.squad17.pcdevapi.models.enums.Role;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -29,7 +33,7 @@ import lombok.NoArgsConstructor;
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Conta {
     @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @NotNull(message = "Username é obrigatório")
@@ -57,6 +61,11 @@ public abstract class Conta {
     @JoinColumn(name = "endereco_id", referencedColumnName = "id")
     private Endereco endereco;
 
+    @NotNull(message = "Role é obrigatória")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role;
+
     public void setSenha(String senha, PasswordEncoder passwordEncoder) {
         this.senha = passwordEncoder.encode(senha);
     }
@@ -68,8 +77,8 @@ public abstract class Conta {
     public Conta(String username, String email, String senha, String nome, Endereco endereco, PasswordEncoder passwordEncoder) {
         this.username = username;
         this.email = email;
-        this.setSenha(senha, passwordEncoder);
         this.nome = nome;
         this.endereco = endereco;
+        this.setSenha(senha, passwordEncoder);
     }
 }

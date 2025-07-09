@@ -67,4 +67,16 @@ public class Endereco {
     @Size(max = 250, message = "País deve ter no máximo 250 caracteres")
     @Column(name = "pais", length = 250, nullable = false)
     private String pais;
+
+    public Endereco(String rua, String bairro, String cidade, String estado, String cep, String numero, String complemento, String pontoReferencia, String pais) {
+        this.rua = rua;
+        this.bairro = bairro;
+        this.cidade = cidade;
+        this.estado = estado;
+        this.cep = cep;
+        this.numero = numero;
+        this.complemento = complemento;
+        this.pontoReferencia = pontoReferencia;
+        this.pais = pais;
+    }
 }

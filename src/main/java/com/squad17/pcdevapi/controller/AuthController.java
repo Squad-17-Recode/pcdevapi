@@ -65,15 +65,14 @@ public class AuthController {
         }
 
         Empresa empresa = new Empresa(
-                request.getCnpj(),
                 request.getUsername(),
-                request.getNome(),
-                request.getDescricao(),
-                request.getSenha(),
                 request.getEmail(),
-                request.getFotoPerfil(),
+                request.getSenha(),
+                request.getNome(),
                 createEnderecoFromDTO(request.getEndereco()),
-                passwordEncoder);
+                passwordEncoder,
+                request.getCnpj(),
+                request.getDescricao());
         empresaRepository.save(empresa);
 
         String token = jwtUtils.generateToken(empresa);

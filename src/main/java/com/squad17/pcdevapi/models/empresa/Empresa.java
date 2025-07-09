@@ -5,9 +5,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.squad17.pcdevapi.models.conta.Conta;
 import com.squad17.pcdevapi.models.endereco.Endereco;
+import com.squad17.pcdevapi.models.enums.Role;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -19,6 +21,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@PrimaryKeyJoinColumn(name = "conta_id", referencedColumnName = "id")
 public class Empresa extends Conta {
     @NotNull(message = "CNPJ da empresa é obrigatório")
     @Column(name = "cnpj", length = 250, nullable = false)
@@ -30,10 +33,10 @@ public class Empresa extends Conta {
     @Column(name = "foto_perfil", columnDefinition = "TEXT")
     private String fotoPerfil;
 
-    public Empresa(String cnpj, String username, String nome, String descricao, String senha, String email, String fotoPerfil, Endereco endereco, PasswordEncoder passwordEncoder) {
+    public Empresa(String username, String email, String senha, String nome, Endereco endereco, PasswordEncoder passwordEncoder, String cnpj, String descricao) {
         super(username, email, senha, nome, endereco, passwordEncoder);
         this.cnpj = cnpj;
         this.descricao = descricao;
-        this.fotoPerfil = fotoPerfil;
+        this.setRole(Role.EMPRESA);
     }
 }

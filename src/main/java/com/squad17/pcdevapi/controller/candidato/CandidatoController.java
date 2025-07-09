@@ -140,19 +140,26 @@ public class CandidatoController {
 
         endereco = enderecoRepository.save(endereco);
 
-        return new Candidato(
+        Candidato candidato = new Candidato(
             dto.getUsername(),
             dto.getEmail(),
             dto.getSenha(),
             dto.getNome(),
             dto.getCpf(),
             endereco,
-            dto.getTipoDeficiencia(),
-            new ArrayList<>(),
-            habilidades,
-            contatos,
             passwordEncoder
         );
+
+        candidato.setBio(dto.getBio());
+        candidato.setTipoDeficiencia(dto.getTipoDeficiencia());
+
+        habilidades.forEach(h -> h.setCandidato(candidato));
+        candidato.setHabilidades(habilidades);
+
+        contatos.forEach(c -> c.setCandidato(candidato));
+        candidato.setContatos(contatos);
+
+        return candidato;
     }
 
     private CandidatoResponseDTO convertToResponseDTO(Candidato candidato) {
