@@ -10,12 +10,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "endereco")
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class Endereco {
     @Id
@@ -44,8 +46,8 @@ public class Endereco {
     private String estado;
 
     @NotNull(message = "CEP é obrigatório")
-    @Size(max = 8, message = "CEP deve ter no máximo 8 caracteres")
-    @Column(name = "cep", length = 8, nullable = false)
+    @Size(max = 8, message = "CEP deve ter no máximo 10 caracteres")
+    @Column(name = "cep", length = 10, nullable = false)
     private String cep;
 
     @NotNull(message = "Número é obrigatório")
