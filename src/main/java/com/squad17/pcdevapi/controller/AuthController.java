@@ -82,43 +82,4 @@ public class AuthController {
         }
         return ResponseEntity.ok().build();
     }
-
-    private boolean emailExists(String email) {
-        return candidatoRepository.findByEmail(email).isPresent() || empresaRepository.findByEmail(email).isPresent();
-    }
-
-    private boolean usernameExists(String username) {
-        return candidatoRepository.findByUsername(username).isPresent() || empresaRepository.findByUsername(username).isPresent();
-    }
-
-    private Optional<Conta> findContaByLogin(String login) {
-        return candidatoRepository.findByEmail(login)
-                .map(Conta.class::cast)
-                .or(() -> empresaRepository.findByEmail(login).map(Conta.class::cast))
-                .or(() -> candidatoRepository.findByUsername(login).map(Conta.class::cast))
-                .or(() -> empresaRepository.findByUsername(login).map(Conta.class::cast));
-    }
-
-    private Optional<Conta> findContaByUsername(String username) {
-        return candidatoRepository.findByUsername(username)
-                .map(Conta.class::cast)
-                .or(() -> empresaRepository.findByUsername(username).map(Conta.class::cast));
-    }
-
-    private Endereco createEnderecoFromDTO(EnderecoDTO dto) {
-        if (dto == null) {
-            return null;
-        }
-        return new Endereco(
-                null, // O ID será gerado pelo JPA
-                dto.getRua(),
-                dto.getBairro(),
-                dto.getCidade(),
-                dto.getEstado(),
-                dto.getCep(),
-                dto.getNumero(),
-                dto.getComplemento(),
-                dto.getPontoReferencia(),
-                dto.getPais());
-    }
 }

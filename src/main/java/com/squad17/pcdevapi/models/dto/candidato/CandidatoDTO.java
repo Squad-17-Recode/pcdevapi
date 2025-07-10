@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 import com.squad17.pcdevapi.models.dto.endereco.EnderecoDTO;
-import com.squad17.pcdevapi.models.endereco.Endereco;
 import com.squad17.pcdevapi.models.enums.TipoDeficiencia;
 
 import jakarta.validation.constraints.NotNull;
@@ -34,7 +33,7 @@ public class CandidatoDTO {
     @NotNull(message = "Endereço é obrigatório")
     private EnderecoDTO endereco;
 
-    // @NotNull(message = "Tipo de deficiência é obrigatório")
+    @NotNull(message = "Tipo de deficiência é obrigatório")
     private TipoDeficiencia tipoDeficiencia;
 
     private List<String> contatos;
