@@ -1,7 +1,5 @@
 package com.squad17.pcdevapi.controller;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -17,9 +15,7 @@ import com.squad17.pcdevapi.config.JwtUtils;
 import com.squad17.pcdevapi.models.candidato.Candidato;
 import com.squad17.pcdevapi.models.conta.Conta;
 import com.squad17.pcdevapi.models.empresa.Empresa;
-import com.squad17.pcdevapi.models.endereco.Endereco;
 import com.squad17.pcdevapi.models.dto.change_password.ChangePasswordRequestDTO;
-import com.squad17.pcdevapi.models.dto.endereco.EnderecoDTO;
 import com.squad17.pcdevapi.models.dto.login.LoginRequestDTO;
 import com.squad17.pcdevapi.models.dto.login.LoginResponseDTO;
 import com.squad17.pcdevapi.repository.candidato.CandidatoRepository;
