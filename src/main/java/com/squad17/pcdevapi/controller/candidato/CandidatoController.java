@@ -42,12 +42,6 @@ public class CandidatoController {
     private EnderecoRepository enderecoRepository;
 
     @Autowired
-    private ContatoRepository contatoRepository;
-
-    @Autowired
-    private HabilidadeRepository habilidadeRepository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @GetMapping("/{id}")
