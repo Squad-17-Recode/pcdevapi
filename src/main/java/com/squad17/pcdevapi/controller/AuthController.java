@@ -41,16 +41,14 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequest) {
-        Conta conta = candidatoRepository.findByEmail(loginRequest.getUsername())
+        Conta conta = candidatoRepository.findByUsername(loginRequest.getUsername())
                 .map(c -> (Conta) c)
-                .orElseGet(() -> candidatoRepository.findByUsername(loginRequest.getUsername()).map(c -> (Conta) c)
-                        .orElse(null));
+                .orElse(null);
 
         if (conta == null) {
-            conta = empresaRepository.findByEmail(loginRequest.getUsername())
+            conta = empresaRepository.findByUsername(loginRequest.getUsername())
                     .map(e -> (Conta) e)
-                    .orElseGet(() -> empresaRepository.findByUsername(loginRequest.getUsername()).map(e -> (Conta) e)
-                            .orElse(null));
+                    .orElse(null);
         }
 
         if (conta == null || !passwordEncoder.matches(loginRequest.getSenha(), conta.getSenha())) {
