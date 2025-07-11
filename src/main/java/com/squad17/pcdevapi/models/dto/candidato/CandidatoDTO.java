@@ -1,9 +1,11 @@
 package com.squad17.pcdevapi.models.dto.candidato;
 
 import java.util.List;
-import java.util.UUID;
 
+import com.squad17.pcdevapi.models.candidatura.Candidatura;
+import com.squad17.pcdevapi.models.dto.contato.ContatoDTO;
 import com.squad17.pcdevapi.models.dto.endereco.EnderecoDTO;
+import com.squad17.pcdevapi.models.dto.habilidade.HabilidadeDTO;
 import com.squad17.pcdevapi.models.enums.TipoDeficiencia;
 
 import jakarta.validation.constraints.NotNull;
@@ -36,7 +38,6 @@ public class CandidatoDTO {
     @NotNull(message = "Tipo de deficiência é obrigatório")
     private TipoDeficiencia tipoDeficiencia;
 
-    private List<String> contatos;
-    private List<String> habilidades;
-    private List<UUID> candidaturas;
+    private List<ContatoDTO> contatos;
+    private List<HabilidadeDTO> habilidades;
 }

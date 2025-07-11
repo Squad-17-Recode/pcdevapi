@@ -1,6 +1,7 @@
 package com.squad17.pcdevapi.controller.candidato;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,15 @@ import com.squad17.pcdevapi.models.candidato.Candidato;
 import com.squad17.pcdevapi.models.contato.Contato;
 import com.squad17.pcdevapi.models.dto.candidato.CandidatoDTO;
 import com.squad17.pcdevapi.models.dto.candidato.CandidatoResponseDTO;
+import com.squad17.pcdevapi.models.dto.contato.ContatoDTO;
 import com.squad17.pcdevapi.models.dto.endereco.EnderecoDTO;
+import com.squad17.pcdevapi.models.dto.habilidade.HabilidadeDTO;
 import com.squad17.pcdevapi.models.endereco.Endereco;
 import com.squad17.pcdevapi.models.habilidade.Habilidade;
 import com.squad17.pcdevapi.repository.candidato.CandidatoRepository;
+import com.squad17.pcdevapi.repository.contato.ContatoRepository;
 import com.squad17.pcdevapi.repository.endereco.EnderecoRepository;
+import com.squad17.pcdevapi.repository.habilidade.HabilidadeRepository;
 
 import jakarta.validation.Valid;
 
@@ -35,6 +40,12 @@ public class CandidatoController {
 
     @Autowired
     private EnderecoRepository enderecoRepository;
+
+    @Autowired
+    private ContatoRepository contatoRepository;
+
+    @Autowired
+    private HabilidadeRepository habilidadeRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -57,6 +68,7 @@ public class CandidatoController {
         }
 
         Candidato candidato = convertToEntity(candidatoDTO);
+
         Candidato savedCandidato = candidatoRepository.save(candidato);
         return ResponseEntity.ok(convertToResponseDTO(savedCandidato));
     }
@@ -68,17 +80,8 @@ public class CandidatoController {
     }
 
     private Candidato convertToEntity(CandidatoDTO dto) {
-        ArrayList<Contato> contatos = new ArrayList<>();
-        if (dto.getContatos() != null) {
-            dto.getContatos().forEach(contato -> contatos.add(new Contato(contato)));
-        }
-
-        ArrayList<Habilidade> habilidades = new ArrayList<>();
-        if (dto.getHabilidades() != null) {
-            dto.getHabilidades().forEach(habilidadeNome -> habilidades.add(new Habilidade(habilidadeNome, 0, null)));
-        }
-
         EnderecoDTO enderecoDTO = dto.getEndereco();
+
         Endereco endereco = new Endereco(
                 enderecoDTO.getRua(),
                 enderecoDTO.getBairro(),
@@ -92,24 +95,47 @@ public class CandidatoController {
 
         endereco = enderecoRepository.save(endereco);
 
+        List<Contato> contatos = new ArrayList<>();
+        if (dto.getContatos() != null) {
+            for (ContatoDTO contatoDTO : dto.getContatos()) {
+                Contato contato = new Contato(
+                        contatoDTO.getNumeroTelefone()
+                );
+                contatos.add(contato);
+            }
+        }
+
+        List<Habilidade> habilidades = new ArrayList<>();
+        if (dto.getHabilidades() != null) {
+            for (HabilidadeDTO habilidadeDTO : dto.getHabilidades()) {
+                Habilidade habilidade = new Habilidade(
+                        habilidadeDTO.getNome(),
+                        habilidadeDTO.getAnosExperiencia()
+                );
+                habilidades.add(habilidade);
+            }
+        }
+
         Candidato candidato = new Candidato(
             dto.getUsername(),
             dto.getEmail(),
             dto.getSenha(),
             dto.getNome(),
+            dto.getBio() != null ? dto.getBio() : "",
             dto.getCpf(),
             endereco,
+            dto.getTipoDeficiencia(),
+            contatos,
+            habilidades,
             passwordEncoder
         );
 
-        candidato.setBio(dto.getBio());
-        candidato.setTipoDeficiencia(dto.getTipoDeficiencia());
-
-        habilidades.forEach(h -> h.setCandidato(candidato));
-        candidato.setHabilidades(habilidades);
-
-        contatos.forEach(c -> c.setCandidato(candidato));
-        candidato.setContatos(contatos);
+        for (Habilidade habilidade : habilidades) {
+            habilidade.setCandidato(candidato);
+        }
+        for (Contato contato : contatos) {
+            contato.setCandidato(candidato);
+        }
 
         return candidato;
     }

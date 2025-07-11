@@ -41,7 +41,7 @@ public class Habilidade {
     @JoinColumn(name = "candidato_id")
     private Candidato candidato;
 
-    public Habilidade(String nome, Integer anosExperiencia, Candidato candidato) {
+    public Habilidade(String nome, Integer anosExperiencia) {
         this.nome = nome;
         this.anosExperiencia = anosExperiencia;
     }
