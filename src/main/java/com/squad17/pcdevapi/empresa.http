@@ -1,0 +1,24 @@
+POST http://localhost:8080/api/empresas
+Content-Type: application/json
+
+{
+  "username": "empresa_teste2",
+  "email": "contato@empresainovadora.com",
+  "senha": "123456",
+  "nome": "Inovadora Tech S.A.",
+  "cnpj": "12345678000199",
+  "descricao": "Empresa líder em soluções de tecnologia e inovação.",
+  "fotoPerfil": "https://example.com/path/to/profile_pic.jpg",
+  "endereco": {
+    "rua": "Avenida das Nações",
+    "bairro": "Setor Comercial",
+    "cidade": "Brasília",
+    "estado": "DF",
+    "cep": "70000-000",
+    "numero": "1000",
+    "complemento": "Bloco A, 5º andar",
+    "pontoReferencia": "Perto do Congresso Nacional",
+    "pais": "Brasil"
+  }
+}
+

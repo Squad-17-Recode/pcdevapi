@@ -15,24 +15,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.squad17.pcdevapi.models.dto.empresa.EmpresaResponseDTO;
-import com.squad17.pcdevapi.models.dto.endereco.EnderecoDTO;
-import com.squad17.pcdevapi.models.dto.habilidade.HabilidadeDTO;
-import com.squad17.pcdevapi.models.candidato.Candidato;
 import com.squad17.pcdevapi.models.contato.Contato;
-import com.squad17.pcdevapi.models.dto.candidato.CandidatoDTO;
 import com.squad17.pcdevapi.models.dto.contato.ContatoDTO;
 import com.squad17.pcdevapi.models.dto.empresa.EmpresaDTO;
+import com.squad17.pcdevapi.models.dto.empresa.EmpresaResponseDTO;
+import com.squad17.pcdevapi.models.dto.endereco.EnderecoDTO;
 import com.squad17.pcdevapi.models.empresa.Empresa;
 import com.squad17.pcdevapi.models.endereco.Endereco;
-import com.squad17.pcdevapi.models.habilidade.Habilidade;
 import com.squad17.pcdevapi.repository.empresa.EmpresaRepository;
 import com.squad17.pcdevapi.repository.endereco.EnderecoRepository;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/empresa")
+@RequestMapping("/api/empresas")
 public class EmpresaController {
 
     @Autowired
