@@ -1,4 +1,4 @@
-package com.squad17.pcdevapi.models.dto.candidato;
+package com.squad17.pcdevapi.models.dto.empresa;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class CandidatoDTO {
+public class EmpresaDTO {
     @NotNull(message = "Username é obrigatório")
     private String username;
 
@@ -26,19 +26,15 @@ public class CandidatoDTO {
     @NotNull(message = "Nome é obrigatório")
     private String nome;
 
-    @NotNull(message = "CPF é obrigatório")
-    @Size(max = 11)
-    private String cpf;
+    @NotNull(message = "CNPJ da empresa é obrigatório")
+    private String cnpj;
 
-    private String bio;
+    private String descricao;
+
+    private String fotoPerfil;
 
     @NotNull(message = "Endereço é obrigatório")
     private EnderecoDTO endereco;
 
-    @NotNull(message = "Tipo de deficiência é obrigatório")
-    private TipoDeficiencia tipoDeficiencia;
-
     private List<ContatoDTO> contatos;
-    
-    private List<HabilidadeDTO> habilidades;
 }
