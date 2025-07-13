@@ -1,5 +1,8 @@
 package com.squad17.pcdevapi.service.vaga;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,10 @@ public class VagaService {
                 dto.getDataFimUltimaEtapa(),
                 dto.getTags()
                 );
+    }
+
+    public Optional<Vaga> findById(UUID id) {
+        return vagaRepository.findById(id);
     }
 
     public Vaga save(Vaga vaga) {

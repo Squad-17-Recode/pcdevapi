@@ -120,4 +120,8 @@ public class CandidatoService {
         dto.setEmail(candidato.getEmail());
         return dto;
     }
+
+    public Optional<Candidato> findByUsername(String username) {
+        return candidatoRepository.findByUsername(username);
+    }
 }

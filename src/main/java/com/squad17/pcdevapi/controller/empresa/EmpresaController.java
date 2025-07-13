@@ -47,6 +47,7 @@ public class EmpresaController {
         if (empresaService.existsByUsername(empresaDTO.getUsername())) {
             return ResponseEntity.badRequest().build();
         }
+        
         if (empresaService.existsByEmail(empresaDTO.getEmail())) {
             return ResponseEntity.badRequest().build();
         }
