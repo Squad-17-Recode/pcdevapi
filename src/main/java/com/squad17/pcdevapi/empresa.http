@@ -1,4 +1,4 @@
-POST http://localhost:8080/api/empresa
+POST http://localhost:8080/api/empresas
 Content-Type: application/json
 
 {
