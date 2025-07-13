@@ -1,0 +1,32 @@
+POST http://localhost:8080/api/empresa
+Content-Type: application/json
+
+{
+  "username": "empresa123",
+  "email": "empresa123@example.com",
+  "senha": "senhaSegura456",
+  "nome": "Empresa Exemplo",
+  "cnpj": "12345678000199",
+  "descricao": "Empresa de tecnologia focada em soluções inovadoras.",
+  "fotoPerfil": "https://example.com/empresa.jpg",
+  "rangeFuncionarios": "GRANDE",
+  "endereco": {
+    "rua": "Avenida das Empresas",
+    "bairro": "Industrial",
+    "cidade": "Rio de Janeiro",
+    "estado": "RJ",
+    "cep": "20040002",
+    "numero": "500",
+    "complemento": "Sala 202",
+    "pontoReferencia": "Próximo ao shopping",
+    "pais": "Brasil"
+  },
+  "contatos": [
+    {
+      "numeroTelefone": "+55 21 99999-8888"
+    },
+    {
+      "numeroTelefone": "+55 21 98888-7777"
+    }
+  ]
+}

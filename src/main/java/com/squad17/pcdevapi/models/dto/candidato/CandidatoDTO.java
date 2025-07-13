@@ -2,7 +2,6 @@ package com.squad17.pcdevapi.models.dto.candidato;
 
 import java.util.List;
 
-import com.squad17.pcdevapi.models.candidatura.Candidatura;
 import com.squad17.pcdevapi.models.dto.contato.ContatoDTO;
 import com.squad17.pcdevapi.models.dto.endereco.EnderecoDTO;
 import com.squad17.pcdevapi.models.dto.habilidade.HabilidadeDTO;
@@ -30,7 +29,10 @@ public class CandidatoDTO {
     @Size(max = 11)
     private String cpf;
 
+    @Size(max = 250, message = "Bio deve ter no máximo 250 caracteres")
     private String bio;
+
+    private String fotoPerfil;
 
     @NotNull(message = "Endereço é obrigatório")
     private EnderecoDTO endereco;
@@ -38,7 +40,11 @@ public class CandidatoDTO {
     @NotNull(message = "Tipo de deficiência é obrigatório")
     private TipoDeficiencia tipoDeficiencia;
 
+    @NotNull(message = "Contatos são obrigatórios")
+    @Size(min = 1, message = "Deve haver pelo menos um contato")
     private List<ContatoDTO> contatos;
-    
+
+    @NotNull(message = "Habilidades são obrigatórias")
+    @Size(min = 1, message = "Deve haver pelo menos uma habilidade")
     private List<HabilidadeDTO> habilidades;
 }

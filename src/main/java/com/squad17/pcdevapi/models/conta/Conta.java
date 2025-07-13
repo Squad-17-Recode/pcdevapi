@@ -1,9 +1,12 @@
 package com.squad17.pcdevapi.models.conta;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.squad17.pcdevapi.models.contato.Contato;
 import com.squad17.pcdevapi.models.endereco.Endereco;
 import com.squad17.pcdevapi.models.enums.Role;
 
@@ -19,6 +22,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -61,6 +65,11 @@ public abstract class Conta {
     @JoinColumn(name = "endereco_id", referencedColumnName = "id")
     private Endereco endereco;
 
+    @NotNull(message = "Contatos não podem ser nulos")
+    @Size(min = 1, message = "Deve haver pelo menos um contato")
+    @OneToMany(mappedBy = "conta", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Contato> contatos;
+
     @NotNull(message = "Role é obrigatória")
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
@@ -74,11 +83,12 @@ public abstract class Conta {
         return passwordEncoder.matches(senhaPlana, this.senha);
     }
 
-    public Conta(String username, String email, String senha, String nome, Endereco endereco, PasswordEncoder passwordEncoder) {
+    public Conta(String username, String email, String senha, String nome, Endereco endereco, List<Contato> contatos, PasswordEncoder passwordEncoder) {
         this.username = username;
         this.email = email;
         this.nome = nome;
         this.endereco = endereco;
+        this.contatos = contatos;
         this.setSenha(senha, passwordEncoder);
     }
 }

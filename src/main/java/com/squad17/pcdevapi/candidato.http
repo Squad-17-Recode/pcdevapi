@@ -2,12 +2,13 @@ POST http://localhost:8080/api/candidatos
 Content-Type: application/json
 
 {
-  "username": "johndoe8888",
-  "email": "johndoe8888@example.com",
+  "username": "johndoe123",
+  "email": "johndoe123@example.com",
   "senha": "senhaSegura123",
   "nome": "John Doe",
   "cpf": "12345678901",
   "bio": "Desenvolvedor Java com experiência em Spring Boot.",
+  "fotoPerfil": "https://example.com/profile.jpg",
   "endereco": {
     "rua": "Rua das Flores",
     "bairro": "Centro",

@@ -17,15 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.squad17.pcdevapi.models.dto.empresa.EmpresaResponseDTO;
 import com.squad17.pcdevapi.models.dto.endereco.EnderecoDTO;
-import com.squad17.pcdevapi.models.dto.habilidade.HabilidadeDTO;
-import com.squad17.pcdevapi.models.candidato.Candidato;
 import com.squad17.pcdevapi.models.contato.Contato;
-import com.squad17.pcdevapi.models.dto.candidato.CandidatoDTO;
 import com.squad17.pcdevapi.models.dto.contato.ContatoDTO;
 import com.squad17.pcdevapi.models.dto.empresa.EmpresaDTO;
 import com.squad17.pcdevapi.models.empresa.Empresa;
 import com.squad17.pcdevapi.models.endereco.Endereco;
-import com.squad17.pcdevapi.models.habilidade.Habilidade;
 import com.squad17.pcdevapi.repository.empresa.EmpresaRepository;
 import com.squad17.pcdevapi.repository.endereco.EnderecoRepository;
 
@@ -99,18 +95,6 @@ public class EmpresaController {
             }
         }
 
-        // Esse método vou usar para a parte de vagas
-        //// List<Habilidade> habilidades = new ArrayList<>();
-        // if (dto.getHabilidades() != null) {
-        //     for (HabilidadeDTO habilidadeDTO : dto.getHabilidades()) {
-        //         Habilidade habilidade = new Habilidade(
-        //                 habilidadeDTO.getNome(),
-        //                 habilidadeDTO.getAnosExperiencia()
-        //         );
-        //         habilidades.add(habilidade);
-        //     }
-        // }
-
         Empresa empresa = new Empresa(
             dto.getUsername(),
             dto.getEmail(),
@@ -119,18 +103,15 @@ public class EmpresaController {
             endereco,
             passwordEncoder,
             dto.getCnpj(),
-            dto.getDescricao()
+            dto.getDescricao() != null ? dto.getDescricao() : "",
+            dto.getFotoPerfil() != null ? dto.getFotoPerfil() : "",
+            contatos,
+            dto.getRangeFuncionarios()
         );
 
-        // Vou usar para as vagas
-        // for (Habilidade habilidade : habilidades) {
-        //     habilidade.setEmpresa(empresa);
-        // }
-
-        // Verificar relação de contatos com empresa
-        // for (Contato contato : contatos) {
-        //     contato.setEmpresa(empresa);
-        // }
+        for (Contato contato : contatos) {
+            contato.setConta(empresa);
+        }
 
         return empresa;
     }
@@ -143,7 +124,4 @@ public class EmpresaController {
         dto.setEmail(empresa.getEmail());
         return dto;
     }
-
-
-
 }

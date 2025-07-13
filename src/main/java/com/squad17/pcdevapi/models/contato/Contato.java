@@ -2,7 +2,7 @@ package com.squad17.pcdevapi.models.contato;
 
 import java.util.UUID;
 
-import com.squad17.pcdevapi.models.candidato.Candidato;
+import com.squad17.pcdevapi.models.conta.Conta;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,8 +30,8 @@ public class Contato {
     private String numeroTelefone;
 
     @ManyToOne
-    @JoinColumn(name = "candidato_id")
-    private Candidato candidato;
+    @JoinColumn(name = "conta_id")
+    private Conta conta;
 
     public Contato(String numeroTelefone) {
         this.numeroTelefone = numeroTelefone;

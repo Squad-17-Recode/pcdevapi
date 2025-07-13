@@ -114,6 +114,7 @@ public class CandidatoController {
             dto.getSenha(),
             dto.getNome(),
             dto.getBio() != null ? dto.getBio() : "",
+            dto.getFotoPerfil() != null ? dto.getFotoPerfil() : "",
             dto.getCpf(),
             endereco,
             dto.getTipoDeficiencia(),
@@ -125,8 +126,9 @@ public class CandidatoController {
         for (Habilidade habilidade : habilidades) {
             habilidade.setCandidato(candidato);
         }
+        
         for (Contato contato : contatos) {
-            contato.setCandidato(candidato);
+            contato.setConta(candidato);
         }
 
         return candidato;

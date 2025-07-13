@@ -4,18 +4,22 @@ package com.squad17.pcdevapi.models.vaga;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import com.squad17.pcdevapi.models.candidatura.Candidatura;
 import com.squad17.pcdevapi.models.empresa.Empresa;
 
 @Entity
 @Table(name = "vaga")
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class Vaga {
 
@@ -45,6 +49,9 @@ public class Vaga {
     @Column(name = "status_vaga", nullable = false)
     private Boolean statusVaga = true;
 
+    @OneToMany(mappedBy = "vaga", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Candidatura> candidaturas;
+
     @NotNull(message = "Data de fim da candidatura é obrigatória")
     @Column(name = "data_fim_candidatura", nullable = false)
     private LocalDate dataFimCandidatura;
@@ -64,7 +71,8 @@ public class Vaga {
                 String logoEmpresa,
                 Boolean statusVaga,
                 LocalDate dataFimCandidatura,
-                LocalDate dataFimUltimaEtapa) {
+                LocalDate dataFimUltimaEtapa,
+                ArrayList<String> tags) {
 
         if (nomeCargo == null || nomeCargo.trim().isEmpty()) {
             throw new IllegalArgumentException("Nome do cargo não pode ser nulo ou vazio");
@@ -87,15 +95,10 @@ public class Vaga {
         this.statusVaga = statusVaga != null ? statusVaga : true;
         this.dataFimCandidatura = dataFimCandidatura;
         this.dataFimUltimaEtapa = dataFimUltimaEtapa;
-        this.tags = new ArrayList<String>();
+        this.tags = tags != null ? tags : new ArrayList<>();
+        this.candidaturas = new ArrayList<>();
     }
 
-    public Vaga(Empresa empresa,
-                String nomeCargo,
-                LocalDate dataFimCandidatura,
-                LocalDate dataFimUltimaEtapa) {
-        this(empresa, nomeCargo, null, null, true, dataFimCandidatura, dataFimUltimaEtapa);
-    }
 
     public boolean isDisponivelParaCandidatura() {
         if (!statusVaga) {

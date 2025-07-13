@@ -2,14 +2,11 @@ package com.squad17.pcdevapi.models.dto.empresa;
 
 import java.util.List;
 
-import com.squad17.pcdevapi.models.candidatura.Candidatura;
 import com.squad17.pcdevapi.models.dto.contato.ContatoDTO;
 import com.squad17.pcdevapi.models.dto.endereco.EnderecoDTO;
-import com.squad17.pcdevapi.models.dto.habilidade.HabilidadeDTO;
-import com.squad17.pcdevapi.models.enums.TipoDeficiencia;
+import com.squad17.pcdevapi.models.enums.RangeFuncionarios;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
@@ -28,6 +25,9 @@ public class EmpresaDTO {
 
     @NotNull(message = "CNPJ da empresa é obrigatório")
     private String cnpj;
+
+    @NotNull(message = "Range Funcionário é obrigatório")
+    private RangeFuncionarios rangeFuncionarios;
 
     private String descricao;
 
