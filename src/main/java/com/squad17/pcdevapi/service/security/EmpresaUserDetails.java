@@ -1,4 +1,4 @@
-package com.squad17.pcdevapi.security;
+package com.squad17.pcdevapi.service.security;
 
 import com.squad17.pcdevapi.models.empresa.Empresa;
 import org.springframework.security.core.GrantedAuthority;

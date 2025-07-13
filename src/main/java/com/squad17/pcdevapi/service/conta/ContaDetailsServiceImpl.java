@@ -26,9 +26,9 @@ public abstract class ContaDetailsServiceImpl implements UserDetailsService {
         }
         // Verifica o tipo de usuário e retorna o UserDetails correspondente
         if (user instanceof com.squad17.pcdevapi.models.candidato.Candidato) {
-            return new com.squad17.pcdevapi.security.CandidatoUserDetails((com.squad17.pcdevapi.models.candidato.Candidato) user);
+            return new com.squad17.pcdevapi.service.security.CandidatoUserDetails((com.squad17.pcdevapi.models.candidato.Candidato) user);
         } else if (user instanceof com.squad17.pcdevapi.models.empresa.Empresa) {
-            return new com.squad17.pcdevapi.security.EmpresaUserDetails((com.squad17.pcdevapi.models.empresa.Empresa) user);
+            return new com.squad17.pcdevapi.service.security.EmpresaUserDetails((com.squad17.pcdevapi.models.empresa.Empresa) user);
         } else {
             throw new UsernameNotFoundException("Tipo de usuário desconhecido para username: " + username);
         }

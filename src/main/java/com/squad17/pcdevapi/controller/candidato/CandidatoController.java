@@ -16,16 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.squad17.pcdevapi.models.candidato.Candidato;
-import com.squad17.pcdevapi.models.contato.Contato;
+
 import com.squad17.pcdevapi.models.dto.candidato.CandidatoDTO;
 import com.squad17.pcdevapi.models.dto.candidato.CandidatoResponseDTO;
-import com.squad17.pcdevapi.models.dto.contato.ContatoDTO;
-import com.squad17.pcdevapi.models.dto.endereco.EnderecoDTO;
-import com.squad17.pcdevapi.models.dto.habilidade.HabilidadeDTO;
-import com.squad17.pcdevapi.models.endereco.Endereco;
-import com.squad17.pcdevapi.models.habilidade.Habilidade;
-import com.squad17.pcdevapi.repository.candidato.CandidatoRepository;
-import com.squad17.pcdevapi.repository.endereco.EnderecoRepository;
+
+import com.squad17.pcdevapi.service.candidato.CandidatoService;
 
 import jakarta.validation.Valid;
 
@@ -34,35 +29,28 @@ import jakarta.validation.Valid;
 public class CandidatoController {
 
     @Autowired
-    private CandidatoRepository candidatoRepository;
-
-    @Autowired
-    private EnderecoRepository enderecoRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @GetMapping("/{id}")
-    public ResponseEntity<CandidatoResponseDTO> getCandidatoById(@PathVariable UUID id) {
-        return candidatoRepository.findById(id)
-                .map(this::convertToResponseDTO)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
+    private CandidatoService candidatoService;
 
     @PostMapping
     public ResponseEntity<CandidatoResponseDTO> createCandidato(@Valid @RequestBody CandidatoDTO candidatoDTO) {
-        if (candidatoRepository.existsByUsername(candidatoDTO.getUsername())) {
+        if (candidatoService.findAll().stream().anyMatch(c -> c.getUsername().equals(candidatoDTO.getUsername()))) {
             return ResponseEntity.badRequest().build();
         }
-        if (candidatoRepository.existsByEmail(candidatoDTO.getEmail())) {
+        if (candidatoService.findAll().stream().anyMatch(c -> c.getEmail().equals(candidatoDTO.getEmail()))) {
             return ResponseEntity.badRequest().build();
         }
 
-        Candidato candidato = convertToEntity(candidatoDTO);
+        Candidato candidato = candidatoService.convertToEntity(candidatoDTO);
+        Candidato savedCandidato = candidatoService.save(candidato);
+        return ResponseEntity.ok(candidatoService.convertToResponseDTO(savedCandidato));
+    }
 
-        Candidato savedCandidato = candidatoRepository.save(candidato);
-        return ResponseEntity.ok(convertToResponseDTO(savedCandidato));
+    @GetMapping("/{id}")
+    public ResponseEntity<CandidatoResponseDTO> getCandidatoById(@PathVariable UUID id) {
+        return candidatoService.findById(id)
+                .map(candidatoService::convertToResponseDTO)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @ExceptionHandler(Exception.class)
@@ -71,75 +59,4 @@ public class CandidatoController {
         return ResponseEntity.status(500).body(ex.getClass().getName() + ": " + ex.getMessage());
     }
 
-    private Candidato convertToEntity(CandidatoDTO dto) {
-        EnderecoDTO enderecoDTO = dto.getEndereco();
-
-        Endereco endereco = new Endereco(
-                enderecoDTO.getRua(),
-                enderecoDTO.getBairro(),
-                enderecoDTO.getCidade(),
-                enderecoDTO.getEstado(),
-                enderecoDTO.getCep(),
-                enderecoDTO.getNumero(),
-                enderecoDTO.getComplemento(),
-                enderecoDTO.getPontoReferencia(),
-                enderecoDTO.getPais());
-
-        endereco = enderecoRepository.save(endereco);
-
-        List<Contato> contatos = new ArrayList<>();
-        if (dto.getContatos() != null) {
-            for (ContatoDTO contatoDTO : dto.getContatos()) {
-                Contato contato = new Contato(
-                        contatoDTO.getNumeroTelefone()
-                );
-                contatos.add(contato);
-            }
-        }
-
-        List<Habilidade> habilidades = new ArrayList<>();
-        if (dto.getHabilidades() != null) {
-            for (HabilidadeDTO habilidadeDTO : dto.getHabilidades()) {
-                Habilidade habilidade = new Habilidade(
-                        habilidadeDTO.getNome(),
-                        habilidadeDTO.getAnosExperiencia()
-                );
-                habilidades.add(habilidade);
-            }
-        }
-
-        Candidato candidato = new Candidato(
-            dto.getUsername(),
-            dto.getEmail(),
-            dto.getSenha(),
-            dto.getNome(),
-            dto.getBio() != null ? dto.getBio() : "",
-            dto.getFotoPerfil() != null ? dto.getFotoPerfil() : "",
-            dto.getCpf(),
-            endereco,
-            dto.getTipoDeficiencia(),
-            contatos,
-            habilidades,
-            passwordEncoder
-        );
-
-        for (Habilidade habilidade : habilidades) {
-            habilidade.setCandidato(candidato);
-        }
-        
-        for (Contato contato : contatos) {
-            contato.setConta(candidato);
-        }
-
-        return candidato;
-    }
-
-    private CandidatoResponseDTO convertToResponseDTO(Candidato candidato) {
-        CandidatoResponseDTO dto = new CandidatoResponseDTO();
-        dto.setId(candidato.getId());
-        dto.setUsername(candidato.getUsername());
-        dto.setNome(candidato.getNome());
-        dto.setEmail(candidato.getEmail());
-        return dto;
-    }
 }
