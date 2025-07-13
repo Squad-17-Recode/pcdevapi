@@ -63,7 +63,7 @@ public class Vaga {
     @ElementCollection
     @CollectionTable(name = "vaga_tags", joinColumns = @JoinColumn(name = "vaga_id"))
     @Column(name = "tag")
-    private ArrayList<String> tags;
+    private List<String> tags = new ArrayList<>();
 
     public Vaga(Empresa empresa,
                 String nomeCargo,
@@ -72,7 +72,7 @@ public class Vaga {
                 Boolean statusVaga,
                 LocalDate dataFimCandidatura,
                 LocalDate dataFimUltimaEtapa,
-                ArrayList<String> tags) {
+                List<String> tags) {
 
         if (nomeCargo == null || nomeCargo.trim().isEmpty()) {
             throw new IllegalArgumentException("Nome do cargo não pode ser nulo ou vazio");

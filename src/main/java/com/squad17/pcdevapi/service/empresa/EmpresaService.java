@@ -35,6 +35,10 @@ public class EmpresaService {
         return empresaRepository.findById(id);
     }
 
+    public Optional<Empresa> findByUsername(String username) {
+        return empresaRepository.findByUsername(username);
+    }
+
     public Empresa save(Empresa empresa) {
         return empresaRepository.save(empresa);
     }

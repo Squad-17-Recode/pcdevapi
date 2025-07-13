@@ -1,0 +1,17 @@
+POST http://localhost:8080/api/empresa/vaga
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXByZXNhMTIzIiwiaWF0IjoxNzUyNDExNDk5LCJleHAiOjE3NTI0NTQ2OTl9.WG4Zx9Zmd2yLhdRLc-AKXu6f8pLLbfOjd2Fn9kG1iIY
+
+{
+  "nomeCargo": "Desenvolvedor Backend",
+  "descricao": "Vaga para desenvolvedor Java com experiência em Spring Boot.",
+  "logoEmpresa": "https://example.com/logo.png",
+  "statusVaga": true,
+  "dataFimCandidatura": "2025-08-01",
+  "dataFimUltimaEtapa": "2025-08-15",
+  "tags": [
+    "Java",
+    "Spring Boot",
+    "API REST"
+  ]
+}
