@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,14 +13,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.squad17.pcdevapi.config.JwtUtils;
+
 import com.squad17.pcdevapi.models.candidato.Candidato;
 import com.squad17.pcdevapi.models.conta.Conta;
 import com.squad17.pcdevapi.models.empresa.Empresa;
+
 import com.squad17.pcdevapi.models.dto.change_password.ChangePasswordRequestDTO;
 import com.squad17.pcdevapi.models.dto.login.LoginRequestDTO;
 import com.squad17.pcdevapi.models.dto.login.LoginResponseDTO;
-import com.squad17.pcdevapi.repository.candidato.CandidatoRepository;
-import com.squad17.pcdevapi.repository.empresa.EmpresaRepository;
+
+import com.squad17.pcdevapi.service.candidato.CandidatoService;
+import com.squad17.pcdevapi.service.empresa.EmpresaService;
 
 import jakarta.validation.Valid;
 
@@ -28,10 +32,9 @@ import jakarta.validation.Valid;
 public class AuthController {
 
     @Autowired
-    private CandidatoRepository candidatoRepository;
-
+    private CandidatoService candidatoService;
     @Autowired
-    private EmpresaRepository empresaRepository;
+    private EmpresaService empresaService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -41,12 +44,12 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequest) {
-        Conta conta = candidatoRepository.findByUsername(loginRequest.getUsername())
+        Conta conta = candidatoService.findByUsername(loginRequest.getUsername())
                 .map(c -> (Conta) c)
                 .orElse(null);
 
         if (conta == null) {
-            conta = empresaRepository.findByUsername(loginRequest.getUsername())
+            conta = empresaService.findByUsername(loginRequest.getUsername())
                     .map(e -> (Conta) e)
                     .orElse(null);
         }
@@ -64,16 +67,35 @@ public class AuthController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loggedUsername = authentication.getName();
 
-        Conta conta = candidatoRepository.findByUsername(loggedUsername)
+        Conta conta = candidatoService.findByUsername(loggedUsername)
                 .map(c -> (Conta) c)
-                .orElseGet(() -> empresaRepository.findByUsername(loggedUsername).map(e -> (Conta) e).orElse(null));
+                .orElseGet(() -> empresaService.findByUsername(loggedUsername).map(e -> (Conta) e).orElse(null));
 
         conta.setSenha(request.getNovaSenha(), passwordEncoder);
         if (conta instanceof Candidato) {
-            candidatoRepository.save((Candidato) conta);
+            candidatoService.save((Candidato) conta);
         } else if (conta instanceof Empresa) {
-            empresaRepository.save((Empresa) conta);
+            empresaService.save((Empresa) conta);
         }
         return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/delete-account")
+    public ResponseEntity<?> deleteAccount(Authentication authentication) {
+        String loggedUsername = authentication.getName();
+
+        var candidatoOpt = candidatoService.findByUsername(loggedUsername);
+        if (candidatoOpt.isPresent()) {
+            candidatoService.deleteByUsername(loggedUsername);
+            return ResponseEntity.ok().build();
+        }
+
+        var empresaOpt = empresaService.findByUsername(loggedUsername);
+        if (empresaOpt.isPresent()) {
+            empresaService.deleteByUsername(loggedUsername);
+            return ResponseEntity.ok().build();
+        }
+
+        return ResponseEntity.notFound().build();
     }
 }

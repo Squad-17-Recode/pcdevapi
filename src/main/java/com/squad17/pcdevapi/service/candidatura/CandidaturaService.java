@@ -1,6 +1,7 @@
 package com.squad17.pcdevapi.service.candidatura;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import com.squad17.pcdevapi.models.candidatura.Candidatura;
@@ -15,4 +16,5 @@ public class CandidaturaService {
     public Candidatura save(Candidatura candidatura) {
         return candidaturaRepository.save(candidatura);
     }
+
 }

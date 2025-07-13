@@ -106,4 +106,9 @@ public class EmpresaService {
         dto.setEmail(empresa.getEmail());
         return dto;
     }
+
+    public void deleteByUsername(String username) {
+        empresaRepository.findByUsername(username)
+                .ifPresent(empresaRepository::delete);
+    }
 }

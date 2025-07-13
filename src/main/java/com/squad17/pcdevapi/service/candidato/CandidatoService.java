@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -123,5 +125,14 @@ public class CandidatoService {
 
     public Optional<Candidato> findByUsername(String username) {
         return candidatoRepository.findByUsername(username);
+    }
+
+    public void deleteByUsername(String username) {
+        candidatoRepository.findByUsername(username)
+        .ifPresent(candidatoRepository::delete);
+    }
+
+    public Page<Candidato> findAll(Pageable pageable) {
+        return candidatoRepository.findAll(pageable);
     }
 }

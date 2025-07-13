@@ -1,8 +1,14 @@
 package com.squad17.pcdevapi.controller.candidato;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.squad17.pcdevapi.models.candidato.Candidato;
@@ -37,6 +44,32 @@ public class CandidatoController {
     @Autowired
     private CandidaturaService candidaturaService;
 
+    @GetMapping
+    public ResponseEntity<?> getAllCandidatos(@RequestParam(defaultValue = "1") int page) {
+        if (page < 1) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Número da página deve ser maior ou igual a 0");
+            return ResponseEntity.badRequest().body(error);
+        }
+        Pageable pageable = PageRequest.of(page - 1, 10);
+        Page<Candidato> candidatosPage = candidatoService.findAll(pageable);
+        if (candidatosPage.getContent().isEmpty()) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Não foi possível encontrar candidatos");
+            return ResponseEntity.status(404).body(error);
+        }
+        List<CandidatoResponseDTO> dtos = candidatosPage.getContent().stream()
+                .map(candidatoService::convertToResponseDTO)
+                .toList();
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", dtos);
+        response.put("totalPages", candidatosPage.getTotalPages());
+        response.put("totalElements", candidatosPage.getTotalElements());
+        response.put("currentPage", candidatosPage.getNumber());
+        return ResponseEntity.ok(response);
+    }
+
+
     @PostMapping
     public ResponseEntity<CandidatoResponseDTO> createCandidato(@Valid @RequestBody CandidatoDTO candidatoDTO) {
         if (candidatoService.findAll().stream().anyMatch(c -> c.getUsername().equals(candidatoDTO.getUsername()))) {
@@ -60,8 +93,7 @@ public class CandidatoController {
     }
 
     @PostMapping("/candidatura")
-    public ResponseEntity<?> createCandidatura(@Valid @RequestBody CandidaturaDTO candidaturaDTO,
-            Authentication authentication) {
+    public ResponseEntity<?> createCandidatura(@Valid @RequestBody CandidaturaDTO candidaturaDTO, Authentication authentication) {
         String username = authentication.getName();
 
         Candidato candidato = candidatoService.findByUsername(username)
@@ -83,5 +115,4 @@ public class CandidatoController {
         ex.printStackTrace();
         return ResponseEntity.status(500).body(ex.getClass().getName() + ": " + ex.getMessage());
     }
-
 }
