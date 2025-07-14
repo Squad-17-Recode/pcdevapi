@@ -31,8 +31,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/candidatos", "/api/candidatos/", "/api/empresas", "/api/empresas/").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/vagas", "/api/vagas/", "/api/candidaturas", "/api/candidaturas/").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/empresas", "/api/empresas/**", "/api/candidatos/**").permitAll()
-                        .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/empresas", "/api/empresas/**", "/api/candidatos", "/api/candidatos/**").permitAll()
+                        .requestMatchers("/api/auth/login", "/api/auth/login/").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptions -> exceptions
