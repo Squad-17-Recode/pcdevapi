@@ -1,4 +1,4 @@
-POST http://localhost:8080/api/empresa/vaga
+POST http://localhost:8080/api/empresas/vaga
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXByZXNhMTIzIiwiaWF0IjoxNzUyNDExNDk5LCJleHAiOjE3NTI0NTQ2OTl9.WG4Zx9Zmd2yLhdRLc-AKXu6f8pLLbfOjd2Fn9kG1iIY
 
@@ -15,3 +15,4 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbXByZXNhMTIzIiwiaWF0IjoxN
     "API REST"
   ]
 }
+

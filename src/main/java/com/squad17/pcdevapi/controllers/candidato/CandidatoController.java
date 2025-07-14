@@ -1,4 +1,4 @@
-package com.squad17.pcdevapi.controller.candidato;
+package com.squad17.pcdevapi.controllers.candidato;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.squad17.pcdevapi.controller;
+package com.squad17.pcdevapi.controllers.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
