@@ -1,5 +1,6 @@
 package com.squad17.pcdevapi.service.vaga;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,6 +16,10 @@ import com.squad17.pcdevapi.repository.vaga.VagaRepository;
 public class VagaService {
     @Autowired
     private VagaRepository vagaRepository;
+
+    public List<Vaga> findAll() {
+        return vagaRepository.findAll();
+    }
 
     public Vaga convertToEntity(VagaDTO dto, Empresa empresa) {
         return new Vaga(
