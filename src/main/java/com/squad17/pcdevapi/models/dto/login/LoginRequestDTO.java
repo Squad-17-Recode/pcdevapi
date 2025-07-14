@@ -1,13 +1,13 @@
 package com.squad17.pcdevapi.models.dto.login;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
 public class LoginRequestDTO {
-    @NotNull(message = "Username é obrigatório")
+    @NotBlank(message = "Username é obrigatório")
     private String username;
 
-    @NotNull(message = "Senha é obrigatória")
+    @NotBlank(message = "Senha é obrigatória")
     private String senha;
 }

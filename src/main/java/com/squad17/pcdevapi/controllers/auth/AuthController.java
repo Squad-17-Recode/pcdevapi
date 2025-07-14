@@ -1,11 +1,17 @@
 package com.squad17.pcdevapi.controllers.auth;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,15 +19,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.squad17.pcdevapi.config.JwtUtils;
-
 import com.squad17.pcdevapi.models.candidato.Candidato;
 import com.squad17.pcdevapi.models.conta.Conta;
-import com.squad17.pcdevapi.models.empresa.Empresa;
-
 import com.squad17.pcdevapi.models.dto.change_password.ChangePasswordRequestDTO;
 import com.squad17.pcdevapi.models.dto.login.LoginRequestDTO;
 import com.squad17.pcdevapi.models.dto.login.LoginResponseDTO;
-
+import com.squad17.pcdevapi.models.empresa.Empresa;
 import com.squad17.pcdevapi.service.candidato.CandidatoService;
 import com.squad17.pcdevapi.service.empresa.EmpresaService;
 
@@ -97,5 +100,27 @@ public class AuthController {
         }
 
         return ResponseEntity.notFound().build();
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+            errors.put(error.getField(), error.getDefaultMessage())
+        );
+        return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, String>> handleJsonParseExceptions(HttpMessageNotReadableException ex) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("error", "Dados inválidos no formato JSON");
+        return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleAll(Exception ex) {
+        ex.printStackTrace();
+        return ResponseEntity.status(500).body(ex.getClass().getName() + ": " + ex.getMessage());
     }
 }
