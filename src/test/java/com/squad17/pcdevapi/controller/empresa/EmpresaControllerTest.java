@@ -16,6 +16,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.squad17.pcdevapi.utils.TestDataFactory;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -33,36 +35,27 @@ public class EmpresaControllerTest {
 
     @Test
     void testCreateEmpresa() throws Exception {
-        String json = """
-        {
-          "username": "empresaTest",
-          "email": "empresaTest@example.com",
-          "senha": "senhaSegura456",
-          "nome": "Empresa Teste",
-          "cnpj": "12345678000199",
-          "descricao": "Empresa de testes.",
-          "fotoPerfil": "https://example.com/empresa.jpg",
-          "rangeFuncionarios": "GRANDE",
-          "endereco": {
-            "rua": "Avenida Teste",
-            "bairro": "Centro",
-            "cidade": "Cidade",
-            "estado": "SP",
-            "cep": "01001000",
-            "numero": "100",
-            "complemento": "Sala 101",
-            "pontoReferencia": "Próximo ao parque",
-            "pais": "Brasil"
-          },
-          "contatos": [
-            { "numeroTelefone": "+55 11 99999-8888" }
-          ]
-        }
-        """;
+        String json = TestDataFactory.createEmpresaJson("empresaTest", "empresaTest@example.com", "12345678000199", "GRANDE");
 
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
                 .content(json))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testGetEmpresaById() throws Exception {
+        String json = TestDataFactory.createEmpresaJson("empresaTest2", "empresaTest2@example.com", "12345678000198", "MEDIO");
+
+        String response = mockMvc.perform(post("/api/empresas")
+                .contentType("application/json")
+                .content(json))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        String id = response.replaceAll(".*\"id\"\\s*:\\s*\"([^\"]+)\".*", "$1");
+
+        mockMvc.perform(get("/api/empresas/" + id))
                 .andExpect(status().isOk());
     }
 
@@ -74,32 +67,7 @@ public class EmpresaControllerTest {
 
     @Test
     void testCreateEmpresaDuplicateUsername() throws Exception {
-        String json = """
-                {
-                  "username": "dupempresa",
-                  "email": "dupempresa@example.com",
-                  "senha": "senha123",
-                  "nome": "Dup Empresa",
-                  "cnpj": "12345678000195",
-                  "descricao": "Empresa duplicada",
-                  "fotoPerfil": "url",
-                  "rangeFuncionarios": "GRANDE",
-                  "endereco": {
-                    "rua": "Rua",
-                    "bairro": "Bairro",
-                    "cidade": "Cidade",
-                    "estado": "SP",
-                    "cep": "01001000",
-                    "numero": "3",
-                    "complemento": "",
-                    "pontoReferencia": "",
-                    "pais": "Brasil"
-                  },
-                  "contatos": [
-                    { "numeroTelefone": "+55 11 99999-8890" }
-                  ]
-                }
-                """;
+        String json = TestDataFactory.createEmpresaJson("dupempresa", "dupempresa@example.com", "11111111000111", "PEQUENO");
 
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
@@ -107,32 +75,7 @@ public class EmpresaControllerTest {
                 .andExpect(status().isOk());
 
         // Try to create again with same username
-        String jsonDup = """
-                {
-                  "username": "dupempresa",
-                  "email": "other@example.com",
-                  "senha": "senha123",
-                  "nome": "Other Empresa",
-                  "cnpj": "12345678000196",
-                  "descricao": "Outra empresa",
-                  "fotoPerfil": "url",
-                  "rangeFuncionarios": "MEDIO",
-                  "endereco": {
-                    "rua": "Rua",
-                    "bairro": "Bairro",
-                    "cidade": "Cidade",
-                    "estado": "SP",
-                    "cep": "01001000",
-                    "numero": "4",
-                    "complemento": "",
-                    "pontoReferencia": "",
-                    "pais": "Brasil"
-                  },
-                  "contatos": [
-                    { "numeroTelefone": "+55 11 99999-8891" }
-                  ]
-                }
-                """;
+        String jsonDup = TestDataFactory.createEmpresaJson("dupempresa", "other@example.com", "22222222000222", "MEDIO");
 
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
@@ -142,32 +85,7 @@ public class EmpresaControllerTest {
 
     @Test
     void testCreateEmpresaDuplicateEmail() throws Exception {
-        String json = """
-                {
-                  "username": "empresaemail",
-                  "email": "empresaemail@example.com",
-                  "senha": "senha123",
-                  "nome": "Empresa Email",
-                  "cnpj": "12345678000197",
-                  "descricao": "Empresa teste email",
-                  "fotoPerfil": "url",
-                  "rangeFuncionarios": "PEQUENO",
-                  "endereco": {
-                    "rua": "Rua",
-                    "bairro": "Bairro",
-                    "cidade": "Cidade",
-                    "estado": "SP",
-                    "cep": "01001000",
-                    "numero": "5",
-                    "complemento": "",
-                    "pontoReferencia": "",
-                    "pais": "Brasil"
-                  },
-                  "contatos": [
-                    { "numeroTelefone": "+55 11 99999-8892" }
-                  ]
-                }
-                """;
+        String json = TestDataFactory.createEmpresaJson("emailempresa", "emailempresa@example.com", "33333333000333", "PEQUENO");
 
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
@@ -175,32 +93,7 @@ public class EmpresaControllerTest {
                 .andExpect(status().isOk());
 
         // Try to create again with same email
-        String jsonDup = """
-                {
-                  "username": "otherempresa",
-                  "email": "empresaemail@example.com",
-                  "senha": "senha123",
-                  "nome": "Other Empresa",
-                  "cnpj": "12345678000198",
-                  "descricao": "Outra empresa",
-                  "fotoPerfil": "url",
-                  "rangeFuncionarios": "MEDIO",
-                  "endereco": {
-                    "rua": "Rua",
-                    "bairro": "Bairro",
-                    "cidade": "Cidade",
-                    "estado": "SP",
-                    "cep": "01001000",
-                    "numero": "6",
-                    "complemento": "",
-                    "pontoReferencia": "",
-                    "pais": "Brasil"
-                  },
-                  "contatos": [
-                    { "numeroTelefone": "+55 11 99999-8893" }
-                  ]
-                }
-                """;
+        String jsonDup = TestDataFactory.createEmpresaJson("otherempresa", "emailempresa@example.com", "44444444000444", "MEDIO");
 
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
@@ -210,101 +103,23 @@ public class EmpresaControllerTest {
 
     @Test
     void testCreateEmpresaWithInvalidData() throws Exception {
-        // Test with missing required fields
-        String jsonMissingUsername = """
-                {
-                  "email": "invalid@example.com",
-                  "senha": "senha123",
-                  "nome": "Invalid Empresa",
-                  "cnpj": "12345678000190",
-                  "descricao": "Empresa inválida",
-                  "fotoPerfil": "url",
-                  "rangeFuncionarios": "GRANDE",
-                  "endereco": {
-                    "rua": "Rua",
-                    "bairro": "Bairro",
-                    "cidade": "Cidade",
-                    "estado": "SP",
-                    "cep": "01001000",
-                    "numero": "1",
-                    "complemento": "",
-                    "pontoReferencia": "",
-                    "pais": "Brasil"
-                  },
-                  "contatos": [
-                    { "numeroTelefone": "+55 11 99999-0000" }
-                  ]
-                }
-                """;
-
+        // Test with missing username
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
-                .content(jsonMissingUsername))
+                .content(TestDataFactory.createInvalidEmpresaJson("username", "")))
                 .andExpect(status().isBadRequest());
 
         // Test with invalid email format
-        String jsonInvalidEmail = """
-                {
-                  "username": "testinvalidemail",
-                  "email": "invalid-email-format",
-                  "senha": "senha123",
-                  "nome": "Test Invalid Email",
-                  "cnpj": "12345678000191",
-                  "descricao": "Empresa teste",
-                  "fotoPerfil": "url",
-                  "rangeFuncionarios": "MEDIO",
-                  "endereco": {
-                    "rua": "Rua",
-                    "bairro": "Bairro",
-                    "cidade": "Cidade",
-                    "estado": "SP",
-                    "cep": "01001000",
-                    "numero": "2",
-                    "complemento": "",
-                    "pontoReferencia": "",
-                    "pais": "Brasil"
-                  },
-                  "contatos": [
-                    { "numeroTelefone": "+55 11 99999-0001" }
-                  ]
-                }
-                """;
-
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
-                .content(jsonInvalidEmail))
+                .content(TestDataFactory.createInvalidEmpresaJson("email", "invalid-email-format")))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void testGetAllEmpresas() throws Exception {
         // Create an empresa first
-        String json = """
-                {
-                  "username": "getalltest",
-                  "email": "getalltest@example.com",
-                  "senha": "senha123",
-                  "nome": "GetAll Test",
-                  "cnpj": "12345678000192",
-                  "descricao": "Empresa para teste",
-                  "fotoPerfil": "url",
-                  "rangeFuncionarios": "PEQUENO",
-                  "endereco": {
-                    "rua": "Rua",
-                    "bairro": "Bairro",
-                    "cidade": "Cidade",
-                    "estado": "SP",
-                    "cep": "01001000",
-                    "numero": "7",
-                    "complemento": "",
-                    "pontoReferencia": "",
-                    "pais": "Brasil"
-                  },
-                  "contatos": [
-                    { "numeroTelefone": "+55 11 99999-8894" }
-                  ]
-                }
-                """;
+        String json = TestDataFactory.createEmpresaJson("getallempresa", "getallempresa@example.com", "77777777000777", "PEQUENO");
 
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
@@ -336,59 +151,8 @@ public class EmpresaControllerTest {
     @Test
     void testGetAllEmpresasPagination() throws Exception {
         // Create two empresas
-        String json1 = """
-                {
-                  "username": "empresa1",
-                  "email": "empresa1@example.com",
-                  "senha": "senha1",
-                  "nome": "Empresa 1",
-                  "cnpj": "12345678000193",
-                  "descricao": "Primeira empresa",
-                  "fotoPerfil": "url",
-                  "rangeFuncionarios": "PEQUENO",
-                  "endereco": {
-                    "rua": "Rua",
-                    "bairro": "Bairro",
-                    "cidade": "Cidade",
-                    "estado": "SP",
-                    "cep": "01001000",
-                    "numero": "1",
-                    "complemento": "",
-                    "pontoReferencia": "",
-                    "pais": "Brasil"
-                  },
-                  "contatos": [
-                    { "numeroTelefone": "+55 11 99999-8888" }
-                  ]
-                }
-                """;
-
-        String json2 = """
-                {
-                  "username": "empresa2",
-                  "email": "empresa2@example.com",
-                  "senha": "senha2",
-                  "nome": "Empresa 2",
-                  "cnpj": "12345678000194",
-                  "descricao": "Segunda empresa",
-                  "fotoPerfil": "url",
-                  "rangeFuncionarios": "MEDIO",
-                  "endereco": {
-                    "rua": "Rua",
-                    "bairro": "Bairro",
-                    "cidade": "Cidade",
-                    "estado": "SP",
-                    "cep": "01001000",
-                    "numero": "2",
-                    "complemento": "",
-                    "pontoReferencia": "",
-                    "pais": "Brasil"
-                  },
-                  "contatos": [
-                    { "numeroTelefone": "+55 11 99999-8889" }
-                  ]
-                }
-                """;
+        String json1 = TestDataFactory.createEmpresaJson("empresa1", "empresa1@example.com", "88888888000888", "PEQUENO");
+        String json2 = TestDataFactory.createEmpresaJson("empresa2", "empresa2@example.com", "99999999000999", "MEDIO");
 
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
@@ -417,355 +181,28 @@ public class EmpresaControllerTest {
 
     @Test
     void testCreateEmpresaWithDifferentRangeFuncionarios() throws Exception {
-        // Test PEQUENO
-        String jsonPequeno = """
-                {
-                  "username": "empresapequeno",
-                  "email": "pequeno@example.com",
-                  "senha": "senha123",
-                  "nome": "Empresa Pequeno",
-                  "cnpj": "11111111000111",
-                  "descricao": "Empresa de pequeno porte",
-                  "fotoPerfil": "url",
-                  "rangeFuncionarios": "PEQUENO",
-                  "endereco": {
-                    "rua": "Rua Pequeno",
-                    "bairro": "Bairro",
-                    "cidade": "Cidade",
-                    "estado": "SP",
-                    "cep": "01001000",
-                    "numero": "10",
-                    "complemento": "",
-                    "pontoReferencia": "",
-                    "pais": "Brasil"
-                  },
-                  "contatos": [
-                    { "numeroTelefone": "+55 11 99999-1111" }
-                  ]
-                }
-                """;
-
+        // Test all RangeFuncionarios values
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
-                .content(jsonPequeno))
+                .content(TestDataFactory.createEmpresaJson("empresapequena", "pequena@example.com", "10101010000101", "PEQUENO")))
                 .andExpect(status().isOk());
 
-        // Test MEDIO
-        String jsonMedio = """
-                {
-                  "username": "empresamedio",
-                  "email": "medio@example.com",
-                  "senha": "senha123",
-                  "nome": "Empresa Medio",
-                  "cnpj": "22222222000222",
-                  "descricao": "Empresa de medio porte",
-                  "fotoPerfil": "url",
-                  "rangeFuncionarios": "MEDIO",
-                  "endereco": {
-                    "rua": "Rua Medio",
-                    "bairro": "Bairro",
-                    "cidade": "Cidade",
-                    "estado": "SP",
-                    "cep": "01001000",
-                    "numero": "20",
-                    "complemento": "",
-                    "pontoReferencia": "",
-                    "pais": "Brasil"
-                  },
-                  "contatos": [
-                    { "numeroTelefone": "+55 11 99999-2222" }
-                  ]
-                }
-                """;
-
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
-                .content(jsonMedio))
+                .content(TestDataFactory.createEmpresaJson("empresamedia", "media@example.com", "20202020000202", "MEDIO")))
                 .andExpect(status().isOk());
 
-        // Test GRANDE
-        String jsonGrande = """
-                {
-                  "username": "empresagrande",
-                  "email": "grande@example.com",
-                  "senha": "senha123",
-                  "nome": "Empresa Grande",
-                  "cnpj": "33333333000333",
-                  "descricao": "Empresa de grande porte",
-                  "fotoPerfil": "url",
-                  "rangeFuncionarios": "GRANDE",
-                  "endereco": {
-                    "rua": "Rua Grande",
-                    "bairro": "Bairro",
-                    "cidade": "Cidade",
-                    "estado": "SP",
-                    "cep": "01001000",
-                    "numero": "30",
-                    "complemento": "",
-                    "pontoReferencia": "",
-                    "pais": "Brasil"
-                  },
-                  "contatos": [
-                    { "numeroTelefone": "+55 11 99999-3333" }
-                  ]
-                }
-                """;
-
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
-                .content(jsonGrande))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void testCreateEmpresaWithEmptyCollections() throws Exception {
-        String json = """
-                {
-                  "username": "emptycollections",
-                  "email": "empty@example.com",
-                  "senha": "senha123",
-                  "nome": "Empty Collections",
-                  "cnpj": "44444444000444",
-                  "descricao": "Empresa sem contatos",
-                  "fotoPerfil": "url",
-                  "rangeFuncionarios": "PEQUENO",
-                  "endereco": {
-                    "rua": "Rua",
-                    "bairro": "Bairro",
-                    "cidade": "Cidade",
-                    "estado": "SP",
-                    "cep": "01001000",
-                    "numero": "60",
-                    "complemento": "",
-                    "pontoReferencia": "",
-                    "pais": "Brasil"
-                  },
-                  "contatos": []
-                }
-                """;
-
-        mockMvc.perform(post("/api/empresas")
-                .contentType("application/json")
-                .content(json))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void testCreateEmpresaWithMultipleContacts() throws Exception {
-        String json = """
-                {
-                  "username": "multiplecontacts",
-                  "email": "multiple@example.com",
-                  "senha": "senha123",
-                  "nome": "Multiple Contacts",
-                  "cnpj": "55555555000555",
-                  "descricao": "Empresa com multiplos contatos",
-                  "fotoPerfil": "url",
-                  "rangeFuncionarios": "MEDIO",
-                  "endereco": {
-                    "rua": "Rua",
-                    "bairro": "Bairro",
-                    "cidade": "Cidade",
-                    "estado": "SP",
-                    "cep": "01001000",
-                    "numero": "70",
-                    "complemento": "",
-                    "pontoReferencia": "",
-                    "pais": "Brasil"
-                  },
-                  "contatos": [
-                    { "numeroTelefone": "+55 11 99999-6666" },
-                    { "numeroTelefone": "+55 11 88888-7777" },
-                    { "numeroTelefone": "+55 11 77777-8888" }
-                  ]
-                }
-                """;
-
-        mockMvc.perform(post("/api/empresas")
-                .contentType("application/json")
-                .content(json))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void testCreateEmpresaWithNullOptionalFields() throws Exception {
-        String json = """
-                {
-                  "username": "nulloptional",
-                  "email": "nullopt@example.com",
-                  "senha": "senha123",
-                  "nome": "Null Optional",
-                  "cnpj": "66666666000666",
-                  "rangeFuncionarios": "PEQUENO",
-                  "endereco": {
-                    "rua": "Rua",
-                    "bairro": "Bairro",
-                    "cidade": "Cidade",
-                    "estado": "SP",
-                    "cep": "01001000",
-                    "numero": "80",
-                    "pais": "Brasil"
-                  },
-                  "contatos": [
-                    { "numeroTelefone": "+55 11 99999-8888" }
-                  ]
-                }
-                """;
-
-        mockMvc.perform(post("/api/empresas")
-                .contentType("application/json")
-                .content(json))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void testCreateEmpresaWithInvalidRangeFuncionarios() throws Exception {
-        String json = """
-                {
-                  "username": "invalidrange",
-                  "email": "invalidrange@example.com",
-                  "senha": "senha123",
-                  "nome": "Invalid Range",
-                  "cnpj": "77777777000777",
-                  "descricao": "Empresa com range inválido",
-                  "fotoPerfil": "url",
-                  "rangeFuncionarios": "INVALID_RANGE",
-                  "endereco": {
-                    "rua": "Rua",
-                    "bairro": "Bairro",
-                    "cidade": "Cidade",
-                    "estado": "SP",
-                    "cep": "01001000",
-                    "numero": "90",
-                    "complemento": "",
-                    "pontoReferencia": "",
-                    "pais": "Brasil"
-                  },
-                  "contatos": [
-                    { "numeroTelefone": "+55 11 99999-9999" }
-                  ]
-                }
-                """;
-
-        mockMvc.perform(post("/api/empresas")
-                .contentType("application/json")
-                .content(json))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void testGetAllEmpresasEmpty() throws Exception {
-        // Test when no empresas exist - should return 404
-        mockMvc.perform(get("/api/empresas"))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void testGetAllEmpresasWithCustomSize() throws Exception {
-        // Create multiple empresas
-        for (int i = 1; i <= 5; i++) {
-            String json = String.format("""
-                    {
-                      "username": "empresa%d",
-                      "email": "empresa%d@example.com",
-                      "senha": "senha%d",
-                      "nome": "Empresa %d",
-                      "cnpj": "8888888800%03d",
-                      "descricao": "Empresa %d para teste",
-                      "fotoPerfil": "url",
-                      "rangeFuncionarios": "PEQUENO",
-                      "endereco": {
-                        "rua": "Rua %d",
-                        "bairro": "Bairro",
-                        "cidade": "Cidade",
-                        "estado": "SP",
-                        "cep": "01001000",
-                        "numero": "%d",
-                        "complemento": "",
-                        "pontoReferencia": "",
-                        "pais": "Brasil"
-                      },
-                      "contatos": [
-                        { "numeroTelefone": "+55 11 9999%d-000%d" }
-                      ]
-                    }
-                    """, i, i, i, i, i, i, i, i, i, i);
-
-            mockMvc.perform(post("/api/empresas")
-                    .contentType("application/json")
-                    .content(json))
-                    .andExpect(status().isOk());
-        }
-
-        // Test with different page sizes
-        mockMvc.perform(get("/api/empresas?page=1&size=2"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content.length()").value(2))
-                .andExpect(jsonPath("$.totalPages").value(3))
-                .andExpect(jsonPath("$.totalElements").value(5));
-
-        mockMvc.perform(get("/api/empresas?page=2&size=3"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content.length()").value(2))
-                .andExpect(jsonPath("$.totalPages").value(2))
-                .andExpect(jsonPath("$.totalElements").value(5));
-    }
-
-    @Test
-    void testGetEmpresaById() throws Exception {
-        String json = """
-                {
-                  "username": "testempresa2",
-                  "email": "testempresa2@example.com",
-                  "senha": "senhaSegura123",
-                  "nome": "Test Empresa2",
-                  "cnpj": "99999999000199",
-                  "descricao": "Empresa para teste ID",
-                  "fotoPerfil": "https://example.com/empresa2.jpg",
-                  "rangeFuncionarios": "MEDIO",
-                  "endereco": {
-                    "rua": "Rua Teste",
-                    "bairro": "Centro",
-                    "cidade": "Cidade",
-                    "estado": "SP",
-                    "cep": "01001000",
-                    "numero": "101",
-                    "complemento": "Sala 102",
-                    "pontoReferencia": "Próximo à praça",
-                    "pais": "Brasil"
-                  },
-                  "contatos": [
-                    { "numeroTelefone": "+55 11 99999-8889" }
-                  ]
-                }
-                """;
-
-        String response = mockMvc.perform(post("/api/empresas")
-                .contentType("application/json")
-                .content(json))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-
-        String id = response.replaceAll(".*\"id\"\\s*:\\s*\"([^\"]+)\".*", "$1");
-
-        mockMvc.perform(get("/api/empresas/" + id))
+                .content(TestDataFactory.createEmpresaJson("empresagrande", "grande@example.com", "30303030000303", "GRANDE")))
                 .andExpect(status().isOk());
     }
 
     @Test
     void testCreateVaga_Unauthenticated() throws Exception {
-        String json = """
-                {
-                  "nomeCargo": "Desenvolvedor Backend",
-                  "descricao": "Vaga para desenvolvedor Java.",
-                  "logoEmpresa": "https://example.com/logo.png",
-                  "statusVaga": true,
-                  "dataFimCandidatura": "2025-08-01",
-                  "dataFimUltimaEtapa": "2025-08-15",
-                  "tags": ["Java", "Spring Boot"]
-                }
-                """;
-        mockMvc.perform(post("/api/empresas/vaga")
+        String json = TestDataFactory.createVagaJson("Desenvolvedor Backend", "Vaga para desenvolvedor Java.", "2025-08-01");
+
+        mockMvc.perform(post("/api/empresa/vaga")
                 .contentType("application/json")
                 .content(json))
                 .andExpect(status().is4xxClientError());
