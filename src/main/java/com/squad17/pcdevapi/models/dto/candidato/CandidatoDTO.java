@@ -7,25 +7,29 @@ import com.squad17.pcdevapi.models.dto.endereco.EnderecoDTO;
 import com.squad17.pcdevapi.models.dto.habilidade.HabilidadeDTO;
 import com.squad17.pcdevapi.models.enums.TipoDeficiencia;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
 public class CandidatoDTO {
-    @NotNull(message = "Username é obrigatório")
+    @NotBlank(message = "Username é obrigatório")
     private String username;
 
-    @NotNull(message = "Email é obrigatório")
+    @NotBlank(message = "Email é obrigatório")
+    @Email(message = "Email deve ter um formato válido")
     private String email;
 
-    @NotNull(message = "Senha é obrigatória")
+    @NotBlank(message = "Senha é obrigatória")
     private String senha;
 
-    @NotNull(message = "Nome é obrigatório")
+    @NotBlank(message = "Nome é obrigatório")
     private String nome;
 
-    @NotNull(message = "CPF é obrigatório")
+    @NotBlank(message = "CPF é obrigatório")
     @Size(max = 11)
     private String cpf;
 
@@ -35,6 +39,7 @@ public class CandidatoDTO {
     private String fotoPerfil;
 
     @NotNull(message = "Endereço é obrigatório")
+    @Valid
     private EnderecoDTO endereco;
 
     @NotNull(message = "Tipo de deficiência é obrigatório")
@@ -42,9 +47,11 @@ public class CandidatoDTO {
 
     @NotNull(message = "Contatos são obrigatórios")
     @Size(min = 1, message = "Deve haver pelo menos um contato")
+    @Valid
     private List<ContatoDTO> contatos;
 
     @NotNull(message = "Habilidades são obrigatórias")
     @Size(min = 1, message = "Deve haver pelo menos uma habilidade")
+    @Valid
     private List<HabilidadeDTO> habilidades;
 }

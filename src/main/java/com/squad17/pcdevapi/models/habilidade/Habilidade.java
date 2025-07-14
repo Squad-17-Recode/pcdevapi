@@ -12,6 +12,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -28,12 +30,13 @@ public class Habilidade {
     @Column(name = "id", columnDefinition = "UUID")
     private UUID id;
 
-    @NotNull(message = "Nome da habilidade é obrigatório")
+    @NotBlank(message = "Nome da habilidade é obrigatório")
     @Size(max = 250, message = "Nome da habilidade deve ter no máximo 250 caracteres")
     @Column(name = "nome", length = 250, nullable = false)
     private String nome;
 
     @NotNull(message = "Anos de experiência é obrigatório")
+    @Min(value = 0, message = "Anos de experiência deve ser maior ou igual a 0")
     @Column(name = "anos_experiencia", nullable = false)
     private Integer anosExperiencia;
 

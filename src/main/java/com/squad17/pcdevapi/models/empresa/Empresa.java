@@ -12,10 +12,13 @@ import com.squad17.pcdevapi.models.enums.RangeFuncionarios;
 import com.squad17.pcdevapi.models.enums.Role;
 import com.squad17.pcdevapi.models.vaga.Vaga;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -47,6 +50,7 @@ public class Empresa extends Conta {
     @Size(max = 250, message = "Descrição deve ter no máximo 250 caracteres")
     private String descricao;
 
+    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Vaga> vagas;
 
     public Empresa(String username, String email, String senha, String nome, Endereco endereco, PasswordEncoder passwordEncoder, String cnpj, String descricao, String fotoPerfil, List<Contato> contatos, RangeFuncionarios rangeFuncionarios) {

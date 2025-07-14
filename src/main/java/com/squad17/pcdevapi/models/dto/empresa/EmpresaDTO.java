@@ -6,24 +6,28 @@ import com.squad17.pcdevapi.models.dto.contato.ContatoDTO;
 import com.squad17.pcdevapi.models.dto.endereco.EnderecoDTO;
 import com.squad17.pcdevapi.models.enums.RangeFuncionarios;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class EmpresaDTO {
-    @NotNull(message = "Username é obrigatório")
+    @NotBlank(message = "Username é obrigatório")
     private String username;
 
-    @NotNull(message = "Email é obrigatório")
+    @NotBlank(message = "Email é obrigatório")
+    @Email(message = "Email deve ter um formato válido")
     private String email;
 
-    @NotNull(message = "Senha é obrigatória")
+    @NotBlank(message = "Senha é obrigatória")
     private String senha;
 
-    @NotNull(message = "Nome é obrigatório")
+    @NotBlank(message = "Nome é obrigatório")
     private String nome;
 
-    @NotNull(message = "CNPJ da empresa é obrigatório")
+    @NotBlank(message = "CNPJ da empresa é obrigatório")
     private String cnpj;
 
     @NotNull(message = "Range Funcionário é obrigatório")
@@ -34,7 +38,9 @@ public class EmpresaDTO {
     private String fotoPerfil;
 
     @NotNull(message = "Endereço é obrigatório")
+    @Valid
     private EnderecoDTO endereco;
 
+    @Valid
     private List<ContatoDTO> contatos;
 }
