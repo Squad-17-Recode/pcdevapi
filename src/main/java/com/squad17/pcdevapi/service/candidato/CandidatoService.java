@@ -47,10 +47,6 @@ public class CandidatoService {
         return candidatoRepository.save(candidato);
     }
 
-    public void deleteById(UUID id) {
-        candidatoRepository.deleteById(id);
-    }
-
     public Candidato convertToEntity(CandidatoDTO dto) {
         EnderecoDTO enderecoDTO = dto.getEndereco();
 
@@ -132,7 +128,4 @@ public class CandidatoService {
         .ifPresent(candidatoRepository::delete);
     }
 
-    public Page<Candidato> findAll(Pageable pageable) {
-        return candidatoRepository.findAll(pageable);
-    }
 }

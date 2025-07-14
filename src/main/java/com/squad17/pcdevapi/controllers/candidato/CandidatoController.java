@@ -6,9 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -45,27 +43,39 @@ public class CandidatoController {
     private CandidaturaService candidaturaService;
 
     @GetMapping
-    public ResponseEntity<?> getAllCandidatos(@RequestParam(defaultValue = "1") int page) {
+    public ResponseEntity<?> getAllCandidatos(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
         if (page < 1) {
             Map<String, String> error = new HashMap<>();
-            error.put("error", "Número da página deve ser maior ou igual a 0");
+            error.put("error", "Número da página deve ser maior ou igual a 1");
             return ResponseEntity.badRequest().body(error);
         }
-        Pageable pageable = PageRequest.of(page - 1, 10);
-        Page<Candidato> candidatosPage = candidatoService.findAll(pageable);
-        if (candidatosPage.getContent().isEmpty()) {
+
+        List<Candidato> allCandidatos = candidatoService.findAll();
+        int totalElements = allCandidatos.size();
+        int fromIndex = Math.min((page - 1) * size, totalElements);
+        int toIndex = Math.min(fromIndex + size, totalElements);
+
+        List<Candidato> pagedCandidatos = allCandidatos.subList(fromIndex, toIndex);
+
+        if (pagedCandidatos.isEmpty()) {
             Map<String, String> error = new HashMap<>();
             error.put("error", "Não foi possível encontrar candidatos");
             return ResponseEntity.status(404).body(error);
         }
-        List<CandidatoResponseDTO> dtos = candidatosPage.getContent().stream()
+
+        List<CandidatoResponseDTO> dtos = pagedCandidatos.stream()
                 .map(candidatoService::convertToResponseDTO)
                 .toList();
+
         Map<String, Object> response = new HashMap<>();
         response.put("content", dtos);
-        response.put("totalPages", candidatosPage.getTotalPages());
-        response.put("totalElements", candidatosPage.getTotalElements());
-        response.put("currentPage", candidatosPage.getNumber());
+        response.put("totalPages", (int) Math.ceil((double) totalElements / size));
+        response.put("totalElements", totalElements);
+        response.put("currentPage", page);
+
         return ResponseEntity.ok(response);
     }
 

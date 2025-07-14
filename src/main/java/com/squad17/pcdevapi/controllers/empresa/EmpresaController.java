@@ -6,11 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,12 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.squad17.pcdevapi.models.dto.empresa.EmpresaResponseDTO;
 import com.squad17.pcdevapi.models.dto.empresa.EmpresaDTO;
+import com.squad17.pcdevapi.models.dto.empresa.EmpresaResponseDTO;
 import com.squad17.pcdevapi.models.empresa.Empresa;
-
 import com.squad17.pcdevapi.service.empresa.EmpresaService;
-
 
 import jakarta.validation.Valid;
 
@@ -37,27 +31,32 @@ public class EmpresaController {
     private EmpresaService empresaService;
 
     @GetMapping
-    public ResponseEntity<?> getAllEmpresas(@RequestParam(defaultValue = "1") int page) {
+    public ResponseEntity<?> getAllEmpresas(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
         if (page < 1) {
             Map<String, String> error = new HashMap<>();
-            error.put("error", "Número da página deve ser maior ou igual a 0");
+            error.put("error", "Número da página deve ser maior ou igual a 1");
             return ResponseEntity.badRequest().body(error);
         }
-        Pageable pageable = PageRequest.of(page - 1, 10);
-        Page<Empresa> empresasPage = empresaService.findAll(pageable);
-        if (empresasPage.getContent().isEmpty()) {
+        List<Empresa> allEmpresas = empresaService.findAll();
+        int totalElements = allEmpresas.size();
+        int fromIndex = Math.min((page - 1) * size, totalElements);
+        int toIndex = Math.min(fromIndex + size, totalElements);
+        List<Empresa> pagedEmpresas = allEmpresas.subList(fromIndex, toIndex);
+        if (pagedEmpresas.isEmpty()) {
             Map<String, String> error = new HashMap<>();
             error.put("error", "Não foi possível encontrar empresas");
             return ResponseEntity.status(404).body(error);
         }
-        List<EmpresaResponseDTO> dtos = empresasPage.getContent().stream()
+        List<EmpresaResponseDTO> dtos = pagedEmpresas.stream()
                 .map(empresaService::convertToResponseDTO)
                 .toList();
         Map<String, Object> response = new HashMap<>();
         response.put("content", dtos);
-        response.put("totalPages", empresasPage.getTotalPages());
-        response.put("totalElements", empresasPage.getTotalElements());
-        response.put("currentPage", empresasPage.getNumber());
+        response.put("totalPages", (int) Math.ceil((double) totalElements / size));
+        response.put("totalElements", totalElements);
+        response.put("currentPage", page);
         return ResponseEntity.ok(response);
     }
 
