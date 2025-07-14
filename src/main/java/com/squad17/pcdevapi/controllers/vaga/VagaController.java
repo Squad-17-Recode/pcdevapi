@@ -55,15 +55,58 @@ public class VagaController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/minhas-vagas")
+    public ResponseEntity<?> getAllMyVagas(
+            Authentication authentication,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        if (page < 1) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Número da página deve ser maior ou igual a 1"));
+        }
+
+        String username = authentication.getName();
+        Empresa empresa = empresaService.findByUsername(username).orElse(null);
+
+        if (empresa == null) {
+            return ResponseEntity.status(403).body(Map.of("error", "Apenas empresas autenticadas podem acessar suas vagas"));
+        }
+
+        List<Vaga> allVagas = empresa.getVagas();
+        int totalElements = allVagas.size();
+        int fromIndex = Math.min((page - 1) * size, totalElements);
+        int toIndex = Math.min(fromIndex + size, totalElements);
+
+        List<Vaga> pagedVagas = allVagas.subList(fromIndex, toIndex);
+
+        if (pagedVagas.isEmpty()) {
+            return ResponseEntity.status(404).body(Map.of("error", "Não foi possível encontrar vagas"));
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", pagedVagas);
+        response.put("totalElements", totalElements);
+        response.put("totalPages", (int) Math.ceil((double) totalElements / size));
+        response.put("currentPage", page);
+
+        return ResponseEntity.ok(response);
+    }
+
+
     @PostMapping
     public ResponseEntity<?> createVaga(@Valid @RequestBody VagaDTO vagaDTO, Authentication authentication) {
         String username = authentication.getName();
-        Empresa empresa = empresaService.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Empresa não encontrada"));
+        Empresa empresa = empresaService.findByUsername(username).orElse(null);
+
+        if (empresa == null) {
+            return ResponseEntity.status(403).body(Map.of("error", "Apenas empresas autenticadas podem criar vagas"));
+        }
 
         Vaga vaga = vagaService.convertToEntity(vagaDTO, empresa);
         Vaga savedVaga = vagaService.save(vaga);
+
         return ResponseEntity.ok(savedVaga);
     }
+
 
 }

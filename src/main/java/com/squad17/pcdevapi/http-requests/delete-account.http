@@ -1,2 +1,0 @@
-DELETE http://localhost:8080/api/auth/delete-account
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lMTIzIiwiaWF0IjoxNzUyNDI5NTU1LCJleHAiOjE3NTI0NzI3NTV9.KwNVcsicBidVSi-noj7Lck71PIXoCcU0pG-aLgj3ZaY

@@ -1,7 +1,0 @@
-POST http://localhost:8080/api/candidatos/candidatura
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huZG9lMTIzIiwiaWF0IjoxNzUyNDI1MzU3LCJleHAiOjE3NTI0Njg1NTd9.zSjKpvnaqi-LAfiZBSIgClZ0GojP1LNBXAQrnB5zuzQ
-
-{
-  "vagaId": "b438d233-94a1-44dc-9349-0d930627804b"
-}
