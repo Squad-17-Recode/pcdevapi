@@ -2,7 +2,7 @@ package com.squad17.pcdevapi.models.dto.change_password;
 
 import jakarta.validation.constraints.NotBlank;
 
-public class ChangePasswordRequestDTO {
+public class ChangePasswordDTO {
     @NotBlank(message = "Nova senha não pode estar vazia")
     private String novaSenha;
 

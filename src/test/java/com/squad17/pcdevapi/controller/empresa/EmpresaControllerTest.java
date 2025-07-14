@@ -16,7 +16,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.squad17.pcdevapi.utils.TestDataFactory;
+import com.squad17.pcdevapi.utils.empresa.EmpresaDataFactory;
+import com.squad17.pcdevapi.utils.vaga.VagaDataFactory;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -35,7 +36,7 @@ public class EmpresaControllerTest {
 
     @Test
     void testCreateEmpresa() throws Exception {
-        String json = TestDataFactory.createEmpresaJson("empresaTest", "empresaTest@example.com", "12345678000199", "GRANDE");
+        String json = EmpresaDataFactory.createEmpresaJson("empresaTest", "empresaTest@example.com", "12345678000199", "GRANDE");
 
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
@@ -45,7 +46,7 @@ public class EmpresaControllerTest {
 
     @Test
     void testGetEmpresaById() throws Exception {
-        String json = TestDataFactory.createEmpresaJson("empresaTest2", "empresaTest2@example.com", "12345678000198", "MEDIO");
+        String json = EmpresaDataFactory.createEmpresaJson("empresaTest2", "empresaTest2@example.com", "12345678000198", "MEDIO");
 
         String response = mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
@@ -67,7 +68,7 @@ public class EmpresaControllerTest {
 
     @Test
     void testCreateEmpresaDuplicateUsername() throws Exception {
-        String json = TestDataFactory.createEmpresaJson("dupempresa", "dupempresa@example.com", "11111111000111", "PEQUENO");
+        String json = EmpresaDataFactory.createEmpresaJson("dupempresa", "dupempresa@example.com", "11111111000111", "PEQUENO");
 
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
@@ -75,7 +76,7 @@ public class EmpresaControllerTest {
                 .andExpect(status().isOk());
 
         // Try to create again with same username
-        String jsonDup = TestDataFactory.createEmpresaJson("dupempresa", "other@example.com", "22222222000222", "MEDIO");
+        String jsonDup = EmpresaDataFactory.createEmpresaJson("dupempresa", "other@example.com", "22222222000222", "MEDIO");
 
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
@@ -85,7 +86,7 @@ public class EmpresaControllerTest {
 
     @Test
     void testCreateEmpresaDuplicateEmail() throws Exception {
-        String json = TestDataFactory.createEmpresaJson("emailempresa", "emailempresa@example.com", "33333333000333", "PEQUENO");
+        String json = EmpresaDataFactory.createEmpresaJson("emailempresa", "emailempresa@example.com", "33333333000333", "PEQUENO");
 
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
@@ -93,7 +94,7 @@ public class EmpresaControllerTest {
                 .andExpect(status().isOk());
 
         // Try to create again with same email
-        String jsonDup = TestDataFactory.createEmpresaJson("otherempresa", "emailempresa@example.com", "44444444000444", "MEDIO");
+        String jsonDup = EmpresaDataFactory.createEmpresaJson("otherempresa", "emailempresa@example.com", "44444444000444", "MEDIO");
 
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
@@ -106,20 +107,20 @@ public class EmpresaControllerTest {
         // Test with missing username
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
-                .content(TestDataFactory.createInvalidEmpresaJson("username", "")))
+                .content(EmpresaDataFactory.createInvalidEmpresaJson("username", "")))
                 .andExpect(status().isBadRequest());
 
         // Test with invalid email format
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
-                .content(TestDataFactory.createInvalidEmpresaJson("email", "invalid-email-format")))
+                .content(EmpresaDataFactory.createInvalidEmpresaJson("email", "invalid-email-format")))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void testGetAllEmpresas() throws Exception {
         // Create an empresa first
-        String json = TestDataFactory.createEmpresaJson("getallempresa", "getallempresa@example.com", "77777777000777", "PEQUENO");
+        String json = EmpresaDataFactory.createEmpresaJson("getallempresa", "getallempresa@example.com", "77777777000777", "PEQUENO");
 
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
@@ -151,8 +152,8 @@ public class EmpresaControllerTest {
     @Test
     void testGetAllEmpresasPagination() throws Exception {
         // Create two empresas
-        String json1 = TestDataFactory.createEmpresaJson("empresa1", "empresa1@example.com", "88888888000888", "PEQUENO");
-        String json2 = TestDataFactory.createEmpresaJson("empresa2", "empresa2@example.com", "99999999000999", "MEDIO");
+        String json1 = EmpresaDataFactory.createEmpresaJson("empresa1", "empresa1@example.com", "88888888000888", "PEQUENO");
+        String json2 = EmpresaDataFactory.createEmpresaJson("empresa2", "empresa2@example.com", "99999999000999", "MEDIO");
 
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
@@ -184,23 +185,23 @@ public class EmpresaControllerTest {
         // Test all RangeFuncionarios values
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
-                .content(TestDataFactory.createEmpresaJson("empresapequena", "pequena@example.com", "10101010000101", "PEQUENO")))
+                .content(EmpresaDataFactory.createEmpresaJson("empresapequena", "pequena@example.com", "10101010000101", "PEQUENO")))
                 .andExpect(status().isOk());
 
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
-                .content(TestDataFactory.createEmpresaJson("empresamedia", "media@example.com", "20202020000202", "MEDIO")))
+                .content(EmpresaDataFactory.createEmpresaJson("empresamedia", "media@example.com", "20202020000202", "MEDIO")))
                 .andExpect(status().isOk());
 
         mockMvc.perform(post("/api/empresas")
                 .contentType("application/json")
-                .content(TestDataFactory.createEmpresaJson("empresagrande", "grande@example.com", "30303030000303", "GRANDE")))
+                .content(EmpresaDataFactory.createEmpresaJson("empresagrande", "grande@example.com", "30303030000303", "GRANDE")))
                 .andExpect(status().isOk());
     }
 
     @Test
     void testCreateVaga_Unauthenticated() throws Exception {
-        String json = TestDataFactory.createVagaJson("Desenvolvedor Backend", "Vaga para desenvolvedor Java.", "2025-08-01");
+        String json = VagaDataFactory.createVagaJson("Desenvolvedor Backend", "Vaga para desenvolvedor Java.", "2025-08-01");
 
         mockMvc.perform(post("/api/empresa/vaga")
                 .contentType("application/json")

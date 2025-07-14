@@ -16,7 +16,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.squad17.pcdevapi.utils.TestDataFactory;
+import com.squad17.pcdevapi.utils.candidato.CandidatoDataFactory;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -35,7 +35,7 @@ public class CandidatoControllerTest {
 
     @Test
     void testCreateCandidato() throws Exception {
-        String json = TestDataFactory.createCandidatoJson("testuser", "testuser@example.com", "12345678901", "AUDITIVA");
+        String json = CandidatoDataFactory.createCandidatoJson("testuser", "testuser@example.com", "12345678901", "AUDITIVA");
 
         mockMvc.perform(post("/api/candidatos")
                 .contentType("application/json")
@@ -45,7 +45,7 @@ public class CandidatoControllerTest {
 
     @Test
     void testGetCandidatoById() throws Exception {
-        String json = TestDataFactory.createCandidatoJson("testuser2", "testuser2@example.com", "12345678902", "AUDITIVA");
+        String json = CandidatoDataFactory.createCandidatoJson("testuser2", "testuser2@example.com", "12345678902", "AUDITIVA");
 
         String response = mockMvc.perform(post("/api/candidatos")
                 .contentType("application/json")
@@ -67,7 +67,7 @@ public class CandidatoControllerTest {
 
     @Test
     void testCreateCandidatoDuplicateUsername() throws Exception {
-        String json = TestDataFactory.createCandidatoJson("dupuser", "dupuser@example.com", "12345678905", "AUDITIVA");
+        String json = CandidatoDataFactory.createCandidatoJson("dupuser", "dupuser@example.com", "12345678905", "AUDITIVA");
 
         mockMvc.perform(post("/api/candidatos")
                 .contentType("application/json")
@@ -75,7 +75,7 @@ public class CandidatoControllerTest {
                 .andExpect(status().isOk());
 
         // Try to create again with same username
-        String jsonDup = TestDataFactory.createCandidatoJson("dupuser", "other@example.com", "12345678906", "AUDITIVA");
+        String jsonDup = CandidatoDataFactory.createCandidatoJson("dupuser", "other@example.com", "12345678906", "AUDITIVA");
 
         mockMvc.perform(post("/api/candidatos")
                 .contentType("application/json")
@@ -85,7 +85,7 @@ public class CandidatoControllerTest {
 
     @Test
     void testCreateCandidatoDuplicateEmail() throws Exception {
-        String json = TestDataFactory.createCandidatoJson("useremail", "useremail@example.com", "12345678907", "AUDITIVA");
+        String json = CandidatoDataFactory.createCandidatoJson("useremail", "useremail@example.com", "12345678907", "AUDITIVA");
 
         mockMvc.perform(post("/api/candidatos")
                 .contentType("application/json")
@@ -93,7 +93,7 @@ public class CandidatoControllerTest {
                 .andExpect(status().isOk());
 
         // Try to create again with same email
-        String jsonDup = TestDataFactory.createCandidatoJson("otheruser", "useremail@example.com", "12345678908", "AUDITIVA");
+        String jsonDup = CandidatoDataFactory.createCandidatoJson("otheruser", "useremail@example.com", "12345678908", "AUDITIVA");
 
         mockMvc.perform(post("/api/candidatos")
                 .contentType("application/json")
@@ -106,20 +106,20 @@ public class CandidatoControllerTest {
         // Test with missing username
         mockMvc.perform(post("/api/candidatos")
                 .contentType("application/json")
-                .content(TestDataFactory.createInvalidCandidatoJson("username", "")))
+                .content(CandidatoDataFactory.createInvalidCandidatoJson("username", "")))
                 .andExpect(status().isBadRequest());
 
         // Test with invalid email format
         mockMvc.perform(post("/api/candidatos")
                 .contentType("application/json")
-                .content(TestDataFactory.createInvalidCandidatoJson("email", "invalid-email-format")))
+                .content(CandidatoDataFactory.createInvalidCandidatoJson("email", "invalid-email-format")))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void testGetAllCandidatos() throws Exception {
         // Create a candidato first
-        String json = TestDataFactory.createCandidatoJson("getalltest", "getalltest@example.com", "12345678909", "AUDITIVA");
+        String json = CandidatoDataFactory.createCandidatoJson("getalltest", "getalltest@example.com", "12345678909", "AUDITIVA");
 
         mockMvc.perform(post("/api/candidatos")
                 .contentType("application/json")
@@ -151,8 +151,8 @@ public class CandidatoControllerTest {
     @Test
     void testGetAllCandidatosPagination() throws Exception {
         // Create two candidatos
-        String json1 = TestDataFactory.createCandidatoJson("user1", "user1@example.com", "12345678903", "AUDITIVA");
-        String json2 = TestDataFactory.createCandidatoJson("user2", "user2@example.com", "12345678904", "AUDITIVA");
+        String json1 = CandidatoDataFactory.createCandidatoJson("user1", "user1@example.com", "12345678903", "AUDITIVA");
+        String json2 = CandidatoDataFactory.createCandidatoJson("user2", "user2@example.com", "12345678904", "AUDITIVA");
 
         mockMvc.perform(post("/api/candidatos")
                 .contentType("application/json")
@@ -184,27 +184,27 @@ public class CandidatoControllerTest {
         // Test all TipoDeficiencia values
         mockMvc.perform(post("/api/candidatos")
                 .contentType("application/json")
-                .content(TestDataFactory.createCandidatoJson("candidatoauditiva", "auditiva@example.com", "12345678911", "AUDITIVA")))
+                .content(CandidatoDataFactory.createCandidatoJson("candidatoauditiva", "auditiva@example.com", "12345678911", "AUDITIVA")))
                 .andExpect(status().isOk());
 
         mockMvc.perform(post("/api/candidatos")
                 .contentType("application/json")
-                .content(TestDataFactory.createCandidatoJson("candidatovisual", "visual@example.com", "12345678912", "VISUAL")))
+                .content(CandidatoDataFactory.createCandidatoJson("candidatovisual", "visual@example.com", "12345678912", "VISUAL")))
                 .andExpect(status().isOk());
 
         mockMvc.perform(post("/api/candidatos")
                 .contentType("application/json")
-                .content(TestDataFactory.createCandidatoJson("candidatofisica", "fisica@example.com", "12345678913", "FISICA")))
+                .content(CandidatoDataFactory.createCandidatoJson("candidatofisica", "fisica@example.com", "12345678913", "FISICA")))
                 .andExpect(status().isOk());
 
         mockMvc.perform(post("/api/candidatos")
                 .contentType("application/json")
-                .content(TestDataFactory.createCandidatoJson("candidatointelectual", "intelectual@example.com", "12345678914", "INTELECTUAL")))
+                .content(CandidatoDataFactory.createCandidatoJson("candidatointelectual", "intelectual@example.com", "12345678914", "INTELECTUAL")))
                 .andExpect(status().isOk());
 
         mockMvc.perform(post("/api/candidatos")
                 .contentType("application/json")
-                .content(TestDataFactory.createCandidatoJson("candidatomultipla", "multipla@example.com", "12345678915", "MULTIPLA")))
+                .content(CandidatoDataFactory.createCandidatoJson("candidatomultipla", "multipla@example.com", "12345678915", "MULTIPLA")))
                 .andExpect(status().isOk());
     }
 
@@ -212,7 +212,7 @@ public class CandidatoControllerTest {
     void testCreateCandidatoWithEmptyCollections() throws Exception {
         mockMvc.perform(post("/api/candidatos")
                 .contentType("application/json")
-                .content(TestDataFactory.createCandidatoJsonWithEmptyCollections()))
+                .content(CandidatoDataFactory.createCandidatoJsonWithEmptyCollections()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -220,7 +220,7 @@ public class CandidatoControllerTest {
     void testCreateCandidatoWithMultipleContacts() throws Exception {
         mockMvc.perform(post("/api/candidatos")
                 .contentType("application/json")
-                .content(TestDataFactory.createCandidatoJsonWithMultipleData()))
+                .content(CandidatoDataFactory.createCandidatoJsonWithMultipleData()))
                 .andExpect(status().isOk());
     }
 
@@ -228,7 +228,7 @@ public class CandidatoControllerTest {
     void testCreateCandidatoWithNullOptionalFields() throws Exception {
         mockMvc.perform(post("/api/candidatos")
                 .contentType("application/json")
-                .content(TestDataFactory.createCandidatoJsonMinimal()))
+                .content(CandidatoDataFactory.createCandidatoJsonMinimal()))
                 .andExpect(status().isOk());
     }
 
@@ -236,7 +236,7 @@ public class CandidatoControllerTest {
     void testCreateCandidatoWithInvalidTipoDeficiencia() throws Exception {
         mockMvc.perform(post("/api/candidatos")
                 .contentType("application/json")
-                .content(TestDataFactory.createCandidatoJsonWithInvalidTipoDeficiencia()))
+                .content(CandidatoDataFactory.createCandidatoJsonWithInvalidTipoDeficiencia()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -244,7 +244,7 @@ public class CandidatoControllerTest {
     void testCreateCandidatoWithInvalidHabilidadeData() throws Exception {
         mockMvc.perform(post("/api/candidatos")
                 .contentType("application/json")
-                .content(TestDataFactory.createCandidatoJsonWithInvalidHabilidade()))
+                .content(CandidatoDataFactory.createCandidatoJsonWithInvalidHabilidade()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -261,7 +261,7 @@ public class CandidatoControllerTest {
         for (int i = 1; i <= 5; i++) {
             mockMvc.perform(post("/api/candidatos")
                     .contentType("application/json")
-                    .content(TestDataFactory.createCandidatoJsonForIteration(i)))
+                    .content(CandidatoDataFactory.createCandidatoJsonForIteration(i)))
                     .andExpect(status().isOk());
         }
 

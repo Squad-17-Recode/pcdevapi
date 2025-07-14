@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.squad17.pcdevapi.config.JwtUtils;
 import com.squad17.pcdevapi.models.candidato.Candidato;
 import com.squad17.pcdevapi.models.conta.Conta;
-import com.squad17.pcdevapi.models.dto.change_password.ChangePasswordRequestDTO;
+import com.squad17.pcdevapi.models.dto.change_password.ChangePasswordDTO;
 import com.squad17.pcdevapi.models.dto.login.LoginRequestDTO;
 import com.squad17.pcdevapi.models.dto.login.LoginResponseDTO;
 import com.squad17.pcdevapi.models.empresa.Empresa;
@@ -60,7 +60,7 @@ public class AuthController {
     }
 
     @PutMapping("/change-password")
-    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequestDTO request) {
+    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordDTO request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loggedUsername = authentication.getName();
 

@@ -20,7 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squad17.pcdevapi.utils.TestDataFactory;
+import com.squad17.pcdevapi.utils.auth.AuthDataFactory;
+import com.squad17.pcdevapi.utils.candidato.CandidatoDataFactory;
+import com.squad17.pcdevapi.utils.empresa.EmpresaDataFactory;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -48,13 +50,13 @@ public class AuthControllerTest {
         // First create a candidato
         mockMvc.perform(post("/api/candidatos")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createCandidatoJson("testuser", "test@example.com", "12345678901", "AUDITIVA")))
+                .content(CandidatoDataFactory.createCandidatoJson("testuser", "test@example.com", "12345678901", "AUDITIVA")))
                 .andExpect(status().isOk());
 
         // Then test login
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createLoginJson("testuser", "senha123")))
+                .content(AuthDataFactory.createLoginJson("testuser", "senha123")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").exists());
     }
@@ -64,13 +66,13 @@ public class AuthControllerTest {
         // First create an empresa
         mockMvc.perform(post("/api/empresas")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createEmpresaJson("testempresa", "empresa@example.com", "12345678000100", "PEQUENO")))
+                .content(EmpresaDataFactory.createEmpresaJson("testempresa", "empresa@example.com", "12345678000100", "PEQUENO")))
                 .andExpect(status().isOk());
 
         // Then test login
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createLoginJson("testempresa", "senha123")))
+                .content(AuthDataFactory.createLoginJson("testempresa", "senha123")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").exists());
     }
@@ -79,7 +81,7 @@ public class AuthControllerTest {
     void testLoginInvalidUsername() throws Exception {
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createLoginJson("nonexistentuser", "senha123")))
+                .content(AuthDataFactory.createLoginJson("nonexistentuser", "senha123")))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -88,13 +90,13 @@ public class AuthControllerTest {
         // First create a candidato
         mockMvc.perform(post("/api/candidatos")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createCandidatoJson("testuser", "test@example.com", "12345678901", "AUDITIVA")))
+                .content(CandidatoDataFactory.createCandidatoJson("testuser", "test@example.com", "12345678901", "AUDITIVA")))
                 .andExpect(status().isOk());
 
         // Then test login with wrong password
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createLoginJson("testuser", "wrongpassword")))
+                .content(AuthDataFactory.createLoginJson("testuser", "wrongpassword")))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -102,7 +104,7 @@ public class AuthControllerTest {
     void testLoginWithEmptyUsername() throws Exception {
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createInvalidLoginJson("username", "")))
+                .content(AuthDataFactory.createInvalidLoginJson("username", "")))
                 .andExpect(status().isBadRequest());
     }
 
@@ -110,7 +112,7 @@ public class AuthControllerTest {
     void testLoginWithEmptyPassword() throws Exception {
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createInvalidLoginJson("senha", "")))
+                .content(AuthDataFactory.createInvalidLoginJson("senha", "")))
                 .andExpect(status().isBadRequest());
     }
 
@@ -118,7 +120,7 @@ public class AuthControllerTest {
     void testLoginWithInvalidJson() throws Exception {
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createInvalidLoginJson("missing_field", "")))
+                .content(AuthDataFactory.createInvalidLoginJson("missing_field", "")))
                 .andExpect(status().isBadRequest());
     }
 
@@ -130,25 +132,25 @@ public class AuthControllerTest {
         // First create a candidato
         mockMvc.perform(post("/api/candidatos")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createCandidatoJson("testuser", "test@example.com", "12345678901", "AUDITIVA")))
+                .content(CandidatoDataFactory.createCandidatoJson("testuser", "test@example.com", "12345678901", "AUDITIVA")))
                 .andExpect(status().isOk());
 
         // Change password
         mockMvc.perform(put("/api/auth/change-password")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createChangePasswordJson("senha123", "newpassword123")))
+                .content(AuthDataFactory.createChangePasswordJson("senha123", "newpassword123")))
                 .andExpect(status().isOk());
 
         // Verify old password doesn't work
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createLoginJson("testuser", "senha123")))
+                .content(AuthDataFactory.createLoginJson("testuser", "senha123")))
                 .andExpect(status().isUnauthorized());
 
         // Verify new password works
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createLoginJson("testuser", "newpassword123")))
+                .content(AuthDataFactory.createLoginJson("testuser", "newpassword123")))
                 .andExpect(status().isOk());
     }
 
@@ -158,19 +160,19 @@ public class AuthControllerTest {
         // First create an empresa
         mockMvc.perform(post("/api/empresas")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createEmpresaJson("testempresa", "empresa@example.com", "12345678000100", "PEQUENO")))
+                .content(EmpresaDataFactory.createEmpresaJson("testempresa", "empresa@example.com", "12345678000100", "PEQUENO")))
                 .andExpect(status().isOk());
 
         // Change password
         mockMvc.perform(put("/api/auth/change-password")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createChangePasswordJson("senha123", "newpassword123")))
+                .content(AuthDataFactory.createChangePasswordJson("senha123", "newpassword123")))
                 .andExpect(status().isOk());
 
         // Verify new password works
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createLoginJson("testempresa", "newpassword123")))
+                .content(AuthDataFactory.createLoginJson("testempresa", "newpassword123")))
                 .andExpect(status().isOk());
     }
 
@@ -179,7 +181,7 @@ public class AuthControllerTest {
     void testChangePasswordUserNotFound() throws Exception {
         mockMvc.perform(put("/api/auth/change-password")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createChangePasswordJson("oldpass", "newpass")))
+                .content(AuthDataFactory.createChangePasswordJson("oldpass", "newpass")))
                 .andExpect(status().isNotFound());
     }
 
@@ -187,7 +189,7 @@ public class AuthControllerTest {
     void testChangePasswordWithoutAuthentication() throws Exception {
         mockMvc.perform(put("/api/auth/change-password")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createChangePasswordJson("oldpass", "newpass")))
+                .content(AuthDataFactory.createChangePasswordJson("oldpass", "newpass")))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -197,12 +199,12 @@ public class AuthControllerTest {
         // First create a candidato
         mockMvc.perform(post("/api/candidatos")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createCandidatoJson("testuser", "test@example.com", "12345678901", "AUDITIVA")))
+                .content(CandidatoDataFactory.createCandidatoJson("testuser", "test@example.com", "12345678901", "AUDITIVA")))
                 .andExpect(status().isOk());
 
         mockMvc.perform(put("/api/auth/change-password")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createInvalidChangePasswordJson("novaSenha", "")))
+                .content(AuthDataFactory.createInvalidChangePasswordJson("novaSenha", "")))
                 .andExpect(status().isBadRequest());
     }
 
@@ -212,12 +214,12 @@ public class AuthControllerTest {
         // First create a candidato
         mockMvc.perform(post("/api/candidatos")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createCandidatoJson("testuser", "test@example.com", "12345678901", "AUDITIVA")))
+                .content(CandidatoDataFactory.createCandidatoJson("testuser", "test@example.com", "12345678901", "AUDITIVA")))
                 .andExpect(status().isOk());
 
         mockMvc.perform(put("/api/auth/change-password")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createInvalidChangePasswordJson("missing_field", "")))
+                .content(AuthDataFactory.createInvalidChangePasswordJson("missing_field", "")))
                 .andExpect(status().isBadRequest());
     }
 
@@ -229,7 +231,7 @@ public class AuthControllerTest {
         // First create a candidato
         mockMvc.perform(post("/api/candidatos")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createCandidatoJson("testuser", "test@example.com", "12345678901", "AUDITIVA")))
+                .content(CandidatoDataFactory.createCandidatoJson("testuser", "test@example.com", "12345678901", "AUDITIVA")))
                 .andExpect(status().isOk());
 
         // Delete account
@@ -239,7 +241,7 @@ public class AuthControllerTest {
         // Verify account is deleted - login should fail
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createLoginJson("testuser", "senha123")))
+                .content(AuthDataFactory.createLoginJson("testuser", "senha123")))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -249,7 +251,7 @@ public class AuthControllerTest {
         // First create an empresa
         mockMvc.perform(post("/api/empresas")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createEmpresaJson("testempresa", "empresa@example.com", "12345678000100", "PEQUENO")))
+                .content(EmpresaDataFactory.createEmpresaJson("testempresa", "empresa@example.com", "12345678000100", "PEQUENO")))
                 .andExpect(status().isOk());
 
         // Delete account
@@ -259,7 +261,7 @@ public class AuthControllerTest {
         // Verify account is deleted - login should fail
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createLoginJson("testempresa", "senha123")))
+                .content(AuthDataFactory.createLoginJson("testempresa", "senha123")))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -289,13 +291,13 @@ public class AuthControllerTest {
         // 1. Create candidato account
         mockMvc.perform(post("/api/candidatos")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createCandidatoJson(username, email, cpf, "VISUAL")))
+                .content(CandidatoDataFactory.createCandidatoJson(username, email, cpf, "VISUAL")))
                 .andExpect(status().isOk());
 
         // 2. Login with original password
         MvcResult loginResult = mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createLoginJson(username, originalPassword)))
+                .content(AuthDataFactory.createLoginJson(username, originalPassword)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").exists())
                 .andReturn();
@@ -309,13 +311,13 @@ public class AuthControllerTest {
         mockMvc.perform(put("/api/auth/change-password")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + token)
-                .content(TestDataFactory.createChangePasswordJson(originalPassword, newPassword)))
+                .content(AuthDataFactory.createChangePasswordJson(originalPassword, newPassword)))
                 .andExpect(status().isOk());
 
         // 4. Login with new password
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createLoginJson(username, newPassword)))
+                .content(AuthDataFactory.createLoginJson(username, newPassword)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").exists());
 
@@ -327,7 +329,7 @@ public class AuthControllerTest {
         // 6. Verify account is deleted
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createLoginJson(username, newPassword)))
+                .content(AuthDataFactory.createLoginJson(username, newPassword)))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -342,13 +344,13 @@ public class AuthControllerTest {
         // 1. Create empresa account
         mockMvc.perform(post("/api/empresas")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createEmpresaJson(username, email, cnpj, "MEDIO")))
+                .content(EmpresaDataFactory.createEmpresaJson(username, email, cnpj, "MEDIO")))
                 .andExpect(status().isOk());
 
         // 2. Login and get token
         MvcResult loginResult = mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createLoginJson(username, originalPassword)))
+                .content(AuthDataFactory.createLoginJson(username, originalPassword)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").exists())
                 .andReturn();
@@ -361,7 +363,7 @@ public class AuthControllerTest {
         mockMvc.perform(put("/api/auth/change-password")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + token)
-                .content(TestDataFactory.createChangePasswordJson(originalPassword, newPassword)))
+                .content(AuthDataFactory.createChangePasswordJson(originalPassword, newPassword)))
                 .andExpect(status().isOk());
 
         // 4. Delete account
@@ -372,7 +374,7 @@ public class AuthControllerTest {
         // 5. Verify account is deleted
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestDataFactory.createLoginJson(username, newPassword)))
+                .content(AuthDataFactory.createLoginJson(username, newPassword)))
                 .andExpect(status().isUnauthorized());
     }
 }
