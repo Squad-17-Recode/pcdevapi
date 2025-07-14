@@ -37,7 +37,7 @@ public class CandidaturaController {
     @Autowired
     private CandidaturaService candidaturaService;
 
-    @GetMapping
+    @GetMapping("/minhas-candidaturas")
     public ResponseEntity<?> getMyCandidaturas(
             Authentication authentication,
             @RequestParam(defaultValue = "1") int page,
@@ -72,8 +72,7 @@ public class CandidaturaController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createCandidatura(@Valid @RequestBody CandidaturaDTO candidaturaDTO,
-            Authentication authentication) {
+    public ResponseEntity<?> createCandidatura(@Valid @RequestBody CandidaturaDTO candidaturaDTO, Authentication authentication) {
         String username = authentication.getName();
 
         Candidato candidato = candidatoService.findByUsername(username)
