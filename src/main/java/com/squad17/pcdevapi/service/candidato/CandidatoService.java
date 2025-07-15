@@ -6,9 +6,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.squad17.pcdevapi.models.candidato.Candidato;
 import com.squad17.pcdevapi.models.contato.Contato;
@@ -42,6 +42,7 @@ public class CandidatoService {
         return candidatoRepository.findById(id);
     }
 
+    @Transactional
     public Candidato save(Candidato candidato) {
         return candidatoRepository.save(candidato);
     }
@@ -60,7 +61,7 @@ public class CandidatoService {
                 enderecoDTO.getPontoReferencia(),
                 enderecoDTO.getPais());
 
-        endereco = enderecoRepository.save(endereco);
+        // Don't save endereco separately - let cascade handle it
 
         List<Contato> contatos = new ArrayList<>();
         if (dto.getContatos() != null) {
@@ -120,6 +121,14 @@ public class CandidatoService {
 
     public Optional<Candidato> findByUsername(String username) {
         return candidatoRepository.findByUsername(username);
+    }
+
+    public boolean existsByUsername(String username) {
+        return candidatoRepository.existsByUsername(username);
+    }
+
+    public boolean existsByEmail(String email) {
+        return candidatoRepository.existsByEmail(email);
     }
 
     public void deleteByUsername(String username) {

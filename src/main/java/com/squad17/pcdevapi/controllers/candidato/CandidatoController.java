@@ -82,17 +82,33 @@ public class CandidatoController {
 
 
     @PostMapping
-    public ResponseEntity<CandidatoResponseDTO> createCandidato(@Valid @RequestBody CandidatoDTO candidatoDTO) {
-        if (candidatoService.findAll().stream().anyMatch(c -> c.getUsername().equals(candidatoDTO.getUsername()))) {
-            return ResponseEntity.badRequest().build();
-        }
-        if (candidatoService.findAll().stream().anyMatch(c -> c.getEmail().equals(candidatoDTO.getEmail()))) {
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<?> createCandidato(@Valid @RequestBody CandidatoDTO candidatoDTO) {
+        try {
+            // Check for existing username using efficient repository method
+            if (candidatoService.existsByUsername(candidatoDTO.getUsername())) {
+                Map<String, String> error = new HashMap<>();
+                error.put("message", "Username já existe");
+                error.put("field", "username");
+                return ResponseEntity.badRequest().body(error);
+            }
+            
+            // Check for existing email using efficient repository method
+            if (candidatoService.existsByEmail(candidatoDTO.getEmail())) {
+                Map<String, String> error = new HashMap<>();
+                error.put("message", "Email já existe");
+                error.put("field", "email");
+                return ResponseEntity.badRequest().body(error);
+            }
 
-        Candidato candidato = candidatoService.convertToEntity(candidatoDTO);
-        Candidato savedCandidato = candidatoService.save(candidato);
-        return ResponseEntity.ok(candidatoService.convertToResponseDTO(savedCandidato));
+            Candidato candidato = candidatoService.convertToEntity(candidatoDTO);
+            Candidato savedCandidato = candidatoService.save(candidato);
+            return ResponseEntity.ok(candidatoService.convertToResponseDTO(savedCandidato));
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Erro interno do servidor: " + e.getMessage());
+            error.put("type", e.getClass().getSimpleName());
+            return ResponseEntity.internalServerError().body(error);
+        }
     }
 
     @GetMapping("/{id}")
