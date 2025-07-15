@@ -22,7 +22,10 @@ import com.squad17.pcdevapi.models.habilidade.Habilidade;
 import com.squad17.pcdevapi.repository.candidato.CandidatoRepository;
 import com.squad17.pcdevapi.repository.endereco.EnderecoRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class CandidatoService {
 
     @Autowired
@@ -44,7 +47,19 @@ public class CandidatoService {
 
     @Transactional
     public Candidato save(Candidato candidato) {
-        return candidatoRepository.save(candidato);
+        try {
+            log.info("Attempting to save candidato with username: {}", candidato.getUsername());
+            log.info("Candidato endereco: {}", candidato.getEndereco());
+            log.info("Candidato contatos size: {}", candidato.getContatos() != null ? candidato.getContatos().size() : 0);
+            log.info("Candidato habilidades size: {}", candidato.getHabilidades() != null ? candidato.getHabilidades().size() : 0);
+
+            Candidato saved = candidatoRepository.save(candidato);
+            log.info("Successfully saved candidato with ID: {}", saved.getId());
+            return saved;
+        } catch (Exception e) {
+            log.error("Error saving candidato: {}", e.getMessage(), e);
+            throw e;
+        }
     }
 
     public Candidato convertToEntity(CandidatoDTO dto) {

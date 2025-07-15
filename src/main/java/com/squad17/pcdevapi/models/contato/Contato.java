@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class Contato {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @NotNull(message = "Número de telefone é obrigatório")

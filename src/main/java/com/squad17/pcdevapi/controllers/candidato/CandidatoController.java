@@ -91,7 +91,7 @@ public class CandidatoController {
                 error.put("field", "username");
                 return ResponseEntity.badRequest().body(error);
             }
-            
+
             // Check for existing email using efficient repository method
             if (candidatoService.existsByEmail(candidatoDTO.getEmail())) {
                 Map<String, String> error = new HashMap<>();

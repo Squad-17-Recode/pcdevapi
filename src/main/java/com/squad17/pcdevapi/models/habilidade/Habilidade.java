@@ -26,8 +26,8 @@ import lombok.NoArgsConstructor;
 public class Habilidade {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", columnDefinition = "UUID")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id")
     private UUID id;
 
     @NotBlank(message = "Nome da habilidade é obrigatório")
