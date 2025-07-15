@@ -1,9 +1,9 @@
 package com.squad17.pcdevapi.service.candidato;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,13 +14,9 @@ import com.squad17.pcdevapi.models.candidato.Candidato;
 import com.squad17.pcdevapi.models.contato.Contato;
 import com.squad17.pcdevapi.models.dto.candidato.CandidatoDTO;
 import com.squad17.pcdevapi.models.dto.candidato.CandidatoResponseDTO;
-import com.squad17.pcdevapi.models.dto.contato.ContatoDTO;
-import com.squad17.pcdevapi.models.dto.endereco.EnderecoDTO;
-import com.squad17.pcdevapi.models.dto.habilidade.HabilidadeDTO;
 import com.squad17.pcdevapi.models.endereco.Endereco;
 import com.squad17.pcdevapi.models.habilidade.Habilidade;
 import com.squad17.pcdevapi.repository.candidato.CandidatoRepository;
-import com.squad17.pcdevapi.repository.endereco.EnderecoRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,9 +26,6 @@ public class CandidatoService {
 
     @Autowired
     private CandidatoRepository candidatoRepository;
-
-    @Autowired
-    private EnderecoRepository enderecoRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -62,69 +55,66 @@ public class CandidatoService {
         }
     }
 
-    public Candidato convertToEntity(CandidatoDTO dto) {
-        EnderecoDTO enderecoDTO = dto.getEndereco();
+    public Candidato convertToEntity(CandidatoDTO candidatoDTO) {
+        try {
+            // Create endereco - DON'T save it separately, let cascade handle it
+            Endereco endereco = new Endereco(
+                candidatoDTO.getEndereco().getRua(),
+                candidatoDTO.getEndereco().getBairro(),
+                candidatoDTO.getEndereco().getCidade(),
+                candidatoDTO.getEndereco().getEstado(),
+                candidatoDTO.getEndereco().getCep(),
+                candidatoDTO.getEndereco().getNumero(),
+                candidatoDTO.getEndereco().getComplemento(),
+                candidatoDTO.getEndereco().getPontoReferencia(),
+                candidatoDTO.getEndereco().getPais()
+            );
 
-        Endereco endereco = new Endereco(
-                enderecoDTO.getRua(),
-                enderecoDTO.getBairro(),
-                enderecoDTO.getCidade(),
-                enderecoDTO.getEstado(),
-                enderecoDTO.getCep(),
-                enderecoDTO.getNumero(),
-                enderecoDTO.getComplemento(),
-                enderecoDTO.getPontoReferencia(),
-                enderecoDTO.getPais());
+            // Create contatos list
+            List<Contato> contatos = candidatoDTO.getContatos().stream()
+                .map(contatoDTO -> {
+                    Contato contato = new Contato();
+                    contato.setNumeroTelefone(contatoDTO.getNumeroTelefone());
+                    return contato;
+                })
+                .collect(Collectors.toList());
 
-        // Don't save endereco separately - let cascade handle it
+            // Create habilidades list
+            List<Habilidade> habilidades = candidatoDTO.getHabilidades().stream()
+                .map(habilidadeDTO -> {
+                    Habilidade habilidade = new Habilidade();
+                    habilidade.setNome(habilidadeDTO.getNome());
+                    habilidade.setAnosExperiencia(habilidadeDTO.getAnosExperiencia());
+                    return habilidade;
+                })
+                .collect(Collectors.toList());
 
-        List<Contato> contatos = new ArrayList<>();
-        if (dto.getContatos() != null) {
-            for (ContatoDTO contatoDTO : dto.getContatos()) {
-                Contato contato = new Contato(
-                        contatoDTO.getNumeroTelefone()
-                );
-                contatos.add(contato);
-            }
+            // Create candidato
+            Candidato candidato = new Candidato(
+                candidatoDTO.getUsername(),
+                candidatoDTO.getEmail(),
+                candidatoDTO.getSenha(),
+                candidatoDTO.getNome(),
+                candidatoDTO.getBio(),
+                candidatoDTO.getFotoPerfil(),
+                candidatoDTO.getCpf(),
+                endereco,
+                candidatoDTO.getTipoDeficiencia(),
+                contatos,
+                habilidades,
+                passwordEncoder
+            );
+
+            // Set bidirectional relationships
+            contatos.forEach(contato -> contato.setConta(candidato)); // Use setConta instead of setCandidato
+            habilidades.forEach(habilidade -> habilidade.setCandidato(candidato));
+
+            return candidato;
+        } catch (Exception e) {
+            log.error("Error converting DTO to entity: {}", e.getMessage(), e);
+            throw new RuntimeException("Erro na conversão de DTO para entidade", e);
         }
-
-        List<Habilidade> habilidades = new ArrayList<>();
-        if (dto.getHabilidades() != null) {
-            for (HabilidadeDTO habilidadeDTO : dto.getHabilidades()) {
-                Habilidade habilidade = new Habilidade(
-                        habilidadeDTO.getNome(),
-                        habilidadeDTO.getAnosExperiencia()
-                );
-                habilidades.add(habilidade);
-            }
-        }
-
-        Candidato candidato = new Candidato(
-            dto.getUsername(),
-            dto.getEmail(),
-            dto.getSenha(),
-            dto.getNome(),
-            dto.getBio() != null ? dto.getBio() : "",
-            dto.getFotoPerfil() != null ? dto.getFotoPerfil() : "",
-            dto.getCpf(),
-            endereco,
-            dto.getTipoDeficiencia(),
-            contatos,
-            habilidades,
-            passwordEncoder
-        );
-
-        for (Habilidade habilidade : habilidades) {
-            habilidade.setCandidato(candidato);
-        }
-
-        for (Contato contato : contatos) {
-            contato.setConta(candidato);
-        }
-
-        return candidato;
     }
-
     public CandidatoResponseDTO convertToResponseDTO(Candidato candidato) {
         CandidatoResponseDTO dto = new CandidatoResponseDTO();
         dto.setId(candidato.getId());
