@@ -57,64 +57,77 @@ public class CandidatoService {
 
     public Candidato convertToEntity(CandidatoDTO candidatoDTO) {
         try {
-            // Create endereco - DON'T save it separately, let cascade handle it
+            log.info("Converting DTO to entity for user: {}", candidatoDTO.getUsername());
+
+            // Create endereco using the constructor but ensure it's a new entity
             Endereco endereco = new Endereco(
-                candidatoDTO.getEndereco().getRua(),
-                candidatoDTO.getEndereco().getBairro(),
-                candidatoDTO.getEndereco().getCidade(),
-                candidatoDTO.getEndereco().getEstado(),
-                candidatoDTO.getEndereco().getCep(),
-                candidatoDTO.getEndereco().getNumero(),
-                candidatoDTO.getEndereco().getComplemento(),
-                candidatoDTO.getEndereco().getPontoReferencia(),
-                candidatoDTO.getEndereco().getPais()
-            );
+                    candidatoDTO.getEndereco().getRua(),
+                    candidatoDTO.getEndereco().getBairro(),
+                    candidatoDTO.getEndereco().getCidade(),
+                    candidatoDTO.getEndereco().getEstado(),
+                    candidatoDTO.getEndereco().getCep(),
+                    candidatoDTO.getEndereco().getNumero(),
+                    candidatoDTO.getEndereco().getComplemento(),
+                    candidatoDTO.getEndereco().getPontoReferencia(), // Now we handle this field
+                    candidatoDTO.getEndereco().getPais());
+            // Ensure the endereco has no ID (new entity)
+            endereco.setId(null);
 
             // Create contatos list
             List<Contato> contatos = candidatoDTO.getContatos().stream()
-                .map(contatoDTO -> {
-                    Contato contato = new Contato();
-                    contato.setNumeroTelefone(contatoDTO.getNumeroTelefone());
-                    return contato;
-                })
-                .collect(Collectors.toList());
+                    .map(contatoDTO -> {
+                        Contato contato = new Contato();
+                        contato.setNumeroTelefone(contatoDTO.getNumeroTelefone());
+                        contato.setId(null); // Ensure new entity
+                        return contato;
+                    })
+                    .collect(Collectors.toList());
 
             // Create habilidades list
             List<Habilidade> habilidades = candidatoDTO.getHabilidades().stream()
-                .map(habilidadeDTO -> {
-                    Habilidade habilidade = new Habilidade();
-                    habilidade.setNome(habilidadeDTO.getNome());
-                    habilidade.setAnosExperiencia(habilidadeDTO.getAnosExperiencia());
-                    return habilidade;
-                })
-                .collect(Collectors.toList());
+                    .map(habilidadeDTO -> {
+                        Habilidade habilidade = new Habilidade();
+                        habilidade.setNome(habilidadeDTO.getNome());
+                        habilidade.setAnosExperiencia(habilidadeDTO.getAnosExperiencia());
+                        habilidade.setId(null); // Ensure new entity
+                        return habilidade;
+                    })
+                    .collect(Collectors.toList());
+
+            log.info("Creating candidato entity...");
 
             // Create candidato
             Candidato candidato = new Candidato(
-                candidatoDTO.getUsername(),
-                candidatoDTO.getEmail(),
-                candidatoDTO.getSenha(),
-                candidatoDTO.getNome(),
-                candidatoDTO.getBio(),
-                candidatoDTO.getFotoPerfil(),
-                candidatoDTO.getCpf(),
-                endereco,
-                candidatoDTO.getTipoDeficiencia(),
-                contatos,
-                habilidades,
-                passwordEncoder
-            );
+                    candidatoDTO.getUsername(),
+                    candidatoDTO.getEmail(),
+                    candidatoDTO.getSenha(),
+                    candidatoDTO.getNome(),
+                    candidatoDTO.getBio(),
+                    candidatoDTO.getFotoPerfil(),
+                    candidatoDTO.getCpf(),
+                    endereco,
+                    candidatoDTO.getTipoDeficiencia(),
+                    contatos,
+                    habilidades,
+                    passwordEncoder);
+
+            // Ensure candidato has no ID (new entity)
+            candidato.setId(null);
+
+            log.info("Setting bidirectional relationships...");
 
             // Set bidirectional relationships
-            contatos.forEach(contato -> contato.setConta(candidato)); // Use setConta instead of setCandidato
+            contatos.forEach(contato -> contato.setConta(candidato));
             habilidades.forEach(habilidade -> habilidade.setCandidato(candidato));
 
+            log.info("Entity conversion completed successfully");
             return candidato;
         } catch (Exception e) {
             log.error("Error converting DTO to entity: {}", e.getMessage(), e);
             throw new RuntimeException("Erro na conversão de DTO para entidade", e);
         }
     }
+
     public CandidatoResponseDTO convertToResponseDTO(Candidato candidato) {
         CandidatoResponseDTO dto = new CandidatoResponseDTO();
         dto.setId(candidato.getId());
