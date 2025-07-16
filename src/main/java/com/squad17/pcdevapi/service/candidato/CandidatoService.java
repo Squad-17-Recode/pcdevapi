@@ -42,12 +42,14 @@ public class CandidatoService {
     public Candidato save(Candidato candidato) {
         try {
             log.info("Attempting to save candidato with username: {}", candidato.getUsername());
+            log.info("Password hash before save: {}", candidato.getSenha());
             log.info("Candidato endereco: {}", candidato.getEndereco());
             log.info("Candidato contatos size: {}", candidato.getContatos() != null ? candidato.getContatos().size() : 0);
             log.info("Candidato habilidades size: {}", candidato.getHabilidades() != null ? candidato.getHabilidades().size() : 0);
 
             Candidato saved = candidatoRepository.save(candidato);
             log.info("Successfully saved candidato with ID: {}", saved.getId());
+            log.info("Password hash after save: {}", saved.getSenha());
             return saved;
         } catch (Exception e) {
             log.error("Error saving candidato: {}", e.getMessage(), e);
@@ -139,6 +141,10 @@ public class CandidatoService {
 
     public Optional<Candidato> findByUsername(String username) {
         return candidatoRepository.findByUsername(username);
+    }
+
+    public Optional<Candidato> findByEmail(String email) {
+        return candidatoRepository.findByEmail(email);
     }
 
     public boolean existsByUsername(String username) {

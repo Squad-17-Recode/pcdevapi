@@ -41,6 +41,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequest) {
+        System.out.println("Login attempt for: " + loginRequest.getUsername());
+
+        // Try to find by username first
         Conta conta = candidatoService.findByUsername(loginRequest.getUsername())
                 .map(c -> (Conta) c)
                 .orElse(null);
@@ -51,11 +54,39 @@ public class AuthController {
                     .orElse(null);
         }
 
-        if (conta == null || !passwordEncoder.matches(loginRequest.getSenha(), conta.getSenha())) {
+        // If not found by username, try by email
+        if (conta == null) {
+            System.out.println("Not found by username, trying by email...");
+            conta = candidatoService.findByEmail(loginRequest.getUsername())
+                    .map(c -> (Conta) c)
+                    .orElse(null);
+        }
+
+        if (conta == null) {
+            conta = empresaService.findByEmail(loginRequest.getUsername())
+                    .map(e -> (Conta) e)
+                    .orElse(null);
+        }
+
+        if (conta == null) {
+            System.out.println("Account not found for: " + loginRequest.getUsername());
+            return ResponseEntity.status(401).build();
+        }
+
+        System.out.println("Found account for: " + conta.getUsername());
+        System.out.println("Stored password hash: " + conta.getSenha());
+        System.out.println("Input password: " + loginRequest.getSenha());
+
+        boolean passwordMatches = passwordEncoder.matches(loginRequest.getSenha(), conta.getSenha());
+        System.out.println("Password matches: " + passwordMatches);
+
+        if (!passwordMatches) {
+            System.out.println("Password does not match for: " + conta.getUsername());
             return ResponseEntity.status(401).build();
         }
 
         String token = jwtUtils.generateToken(conta);
+        System.out.println("Login successful for: " + conta.getUsername());
         return ResponseEntity.ok(new LoginResponseDTO(token));
     }
 

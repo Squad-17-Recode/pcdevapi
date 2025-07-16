@@ -39,6 +39,10 @@ public class EmpresaService {
         return empresaRepository.findByUsername(username);
     }
 
+    public Optional<Empresa> findByEmail(String email) {
+        return empresaRepository.findByEmail(email);
+    }
+
     public Empresa save(Empresa empresa) {
         return empresaRepository.save(empresa);
     }
